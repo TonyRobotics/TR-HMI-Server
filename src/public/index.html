@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <title>Test Page</title>
+    <script src="js/socket.io.js"></script>
+</head>
+
+<body>
+    <button id="testBtn">Ping!</button>
+
+    <script>
+        let socket = io('http://localhost:3000');
+
+        socket.on('connect', () => {
+            console.log('client connected');
+        });
+        socket.on('event', (data) => {
+            console.log('event:', data);
+        });
+        socket.on('disconnect', () => {
+            console.log('client disconnected.');
+        });
+
+        document.getElementById('testBtn').onclick = function () {
+            socket.emit('/settings/baseUrl', {
+                method: 'get',
+                params: []
+            }, (data) => {
+                console.log('get base host:', data)
+            });
+
+            socket.emit('/settings/baseUrl', {
+                method: 'set',
+                params: [{
+                    url: 'http://192.168.100.106:3001'
+                }]
+            }, (data) => {
+                console.log('set url:', data);
+            })
+
+            console.log('test...');
+        }
+    </script>
+</body>
+
+</html>
