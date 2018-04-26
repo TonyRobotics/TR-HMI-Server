@@ -3,6 +3,9 @@ const {
     pubCmdVelMsg
 } = require('../roscontrol/cmd_vel');
 
+/**
+ * 获取/设置 默认地图
+ */
 function onMapSetting(req, fn) {
     if (req && req.method) {
         if (req.method == 'set') {
@@ -34,6 +37,9 @@ function onMapSetting(req, fn) {
     }
 }
 
+/**
+ * 底盘 运动控制
+ */
 function onCmdVel(req, fn) {
     if (req.vx && req.vt) {
         pubCmdVelMsg(req.vx, req.vt);
@@ -42,6 +48,9 @@ function onCmdVel(req, fn) {
     }
 }
 
+/**
+ * 切换运行模式
+ */
 function onLaunchMode(req, fn) {
     if (req.mode) {
         rosControl.toggleRosLaunchMode(req.mode);
@@ -58,6 +67,9 @@ function onLaunchMode(req, fn) {
     }
 }
 
+/**
+ * 获取 / 设置最大运动速度
+ */
 function onSpeedSetting(req, fn) {
     if (req && req.method) {
         if (req.method == 'set') {

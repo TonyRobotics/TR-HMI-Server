@@ -1,5 +1,9 @@
 const controllers = require('./controllers');
 
+/**
+ * 注册 socket io 业务路由
+ * @param io main io instance,like `const io = require('socket.io')(http);`
+ */
 function registerRouters(io) {
     io.on('connection', function (client) {
         client.on('connection', () => {
@@ -9,7 +13,7 @@ function registerRouters(io) {
             console.log('- 1 client connected');
         });
 
-        
+
         //set max speed
         client.on('/settings/speed', controllers.onSpeedSetting);
 
