@@ -1,9 +1,13 @@
+'use strict'
+
 const Koa = require('koa');
 const path = require('path');
 const router = require('koa-router')();
 const bodyParser = require('koa-bodyparser');
-const staticFiles = require('./static-files');
+const serve = require('koa-static');
+const json = require('koa-json');
 const controller = require('./controller');
+const socketRouter = require('../socket/router');
 
 const app = new Koa();
 
@@ -17,12 +21,12 @@ app.use(async (ctx, next) => {
     ctx.response.set('X-Response-Time', `${execTime}ms`);
 });
 
+app.use(json());
+
 app.use(bodyParser());
 
-app.use(staticFiles('/static/', path.join(__dirname, '../public')));
+app.use(serve(path.join(__dirname, '../public')));
 
 app.use(controller());
 
-app.listen(3000);
-
-console.log('app started at port 3000...');
+module.exports = app;
