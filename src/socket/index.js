@@ -10,7 +10,7 @@ function registerRouters(io) {
             console.log('+ 1 client connected');
         });
         client.on('disconnect', () => {
-            console.log('- 1 client connected');
+            console.log('- 1 client disconnected');
         });
 
 
@@ -28,4 +28,4 @@ function registerRouters(io) {
     });
 }
 
-module.exports.registerRouters = registerRouters;
+module.exports = registerRouters;

@@ -7,7 +7,6 @@ const bodyParser = require('koa-bodyparser');
 const serve = require('koa-static');
 const json = require('koa-json');
 const controller = require('./controller');
-const socketRouter = require('../socket/router');
 
 const app = new Koa();
 
