@@ -6,7 +6,14 @@
 </head>
 
 <body>
-    <button id="testBtn">Ping!</button>
+    <button id="getSpeed">getSpeed</button>
+    <div style="display: block">
+        <input id="socketTopic" />
+        </br>
+        <textarea id="socketReq" cols="30" rows="10"></textarea>
+        </br>
+        <button id="sendRaw">Send Raw Socket</button>
+    </div>
 
     <script>
         let socket = io('http://localhost:3000');
@@ -21,24 +28,23 @@
             console.log('client disconnected.');
         });
 
-        document.getElementById('testBtn').onclick = function () {
-            socket.emit('/settings/baseUrl', {
+        document.getElementById('getSpeed').onclick = function () {
+            socket.emit('/settings/speed', {
                 method: 'get',
                 params: []
             }, (data) => {
-                console.log('get base host:', data)
+                console.log('/settings/speed ==>:', data);
+                alert(JSON.stringify(data));
             });
+        }
 
-            socket.emit('/settings/baseUrl', {
-                method: 'set',
-                params: [{
-                    url: 'http://192.168.100.106:3001'
-                }]
-            }, (data) => {
-                console.log('set url:', data);
+        document.getElementById('sendRaw').onclick = function () {
+            let topic = document.getElementById('socketTopic').value;
+            let req = document.getElementById('socketReq').value;
+            socket.emit(topic, req || '' ? JSON.parse(req) : {}, (data) => {
+                console.log(topic + ' ==>:', data);
+                alert(JSON.stringify(data));
             })
-
-            console.log('test...');
         }
     </script>
 </body>

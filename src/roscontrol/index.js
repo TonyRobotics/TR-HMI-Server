@@ -3,10 +3,12 @@
  * @author Dominic
  */
 
+'use strict'
+
 const {
     simpleSpawn,
     killSpawn
-} = require('./simspawn');
+} = require('../utils/simspawn');
 
 const rosnodejs = require('rosnodejs');
 

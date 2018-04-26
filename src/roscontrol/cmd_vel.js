@@ -3,6 +3,8 @@
  * @author Dominic
  */
 
+'use strict'
+
 const rosnodejs = require('rosnodejs');
 const Twist = rosnodejs.require('geometry_msgs').msg.Twist;
 
@@ -27,6 +29,12 @@ function setUpCommand(rosNode) {
  * @param rosNode 宿主node(tr_hmi_node)
  */
 function pubCmdVelMsg(vx, vt, rosNode) {
+    if (!rosNode) {
+        rosNode = rosnodejs.nh;
+        if (!rosNode) {
+            console.error('could not get node handler for cmd_vel');
+        }
+    }
     if (!cmd_vel) {
         setUpCommand(rosNode);
     }
@@ -45,7 +53,7 @@ function pubCmdVelMsg(vx, vt, rosNode) {
     });
 
     cmd_vel.publish(msgTwist);
-    
+
     console.log('publishing twist:', msgTwist);
 }
 

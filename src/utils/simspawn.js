@@ -1,3 +1,9 @@
+/**
+ * Simple Spawn.
+ */
+
+'use strict'
+
 const {
     spawn
 } = require('child_process');
