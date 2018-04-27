@@ -1,0 +1,52 @@
+<html>
+
+<head>
+    <title>Test Page</title>
+    <script src="js/socket.io.js"></script>
+</head>
+
+<body>
+    <button id="getSpeed">getSpeed</button>
+    <div style="display: block">
+        <input id="socketTopic" />
+        </br>
+        <textarea id="socketReq" cols="30" rows="10"></textarea>
+        </br>
+        <button id="sendRaw">Send Raw Socket</button>
+    </div>
+
+    <script>
+        let socket = io('http://localhost:3000');
+
+        socket.on('connect', () => {
+            console.log('client connected');
+        });
+        socket.on('event', (data) => {
+            console.log('event:', data);
+        });
+        socket.on('disconnect', () => {
+            console.log('client disconnected.');
+        });
+
+        document.getElementById('getSpeed').onclick = function () {
+            socket.emit('/settings/speed', {
+                method: 'get',
+                params: []
+            }, (data) => {
+                console.log('/settings/speed ==>:', data);
+                alert(JSON.stringify(data));
+            });
+        }
+
+        document.getElementById('sendRaw').onclick = function () {
+            let topic = document.getElementById('socketTopic').value;
+            let req = document.getElementById('socketReq').value;
+            socket.emit(topic, req || '' ? JSON.parse(req) : {}, (data) => {
+                console.log(topic + ' ==>:', data);
+                alert(JSON.stringify(data));
+            })
+        }
+    </script>
+</body>
+
+</html>
