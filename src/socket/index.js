@@ -13,13 +13,6 @@ function registerRouters(io) {
             console.log('- 1 client disconnected');
         });
 
-
-        //set max speed
-        client.on('/settings/speed', controllers.onSpeedSetting);
-
-        //set default map
-        client.on('/settings/map', controllers.onMapSetting);
-
         //toggle tr launch mode
         client.on('/launch_mode', controllers.onLaunchMode);
 

@@ -1,82 +1,6 @@
-# 基于 scoket.io 的通讯 API
+# TR HMI 实时通讯 API
 
-## 一、设置相关
-
-### （一）最大速度设置
-
-> topic: `/settings/speed`
-
-1. 获取速度设置
-
-    - request 参数：
-
-        ```json
-        {
-            "method":"get"
-        }
-        ```
-
-    - 返回数值：
-
-        ```json
-        {
-            "data":{
-                "maxVx":2,
-                "maxVt":2
-            }
-        }
-        ```
-2. 设置最大速度
-
-    - requset 参数：
-
-        ```json
-        {
-            "method":"set",
-            "data":{
-                "maxVx":2,
-                "maxVt":2
-            }
-        }
-        ```
-
-### （二）默认地图设置
-
-> topic: `/settings/map`
-
-1. 获取默认地图
-
-    - request 参数：
-
-        ```json
-        {
-            "method":"get"
-        }
-        ```
-
-    - 返回数值：
-
-        ```json
-        {
-            "data":{
-                "map":"2015.yaml"
-         }
-        }
-        ```
-2. 设置默认地图
-
-    - requset 参数：
-
-        ```json
-        {
-            "method":"set",
-            "data":{
-                "map":"2015.yaml"
-            }
-        }
-        ```
-
-## 二、切换底盘工作模式
+## 一、切换底盘工作模式
 
 > topic: `/launch_mode`
 
@@ -93,7 +17,7 @@
   - `mapping`: 建图模式
   - `navigation`: 导航模式
 
-## 三、运动控制
+## 二、运动控制
 
 > topic: `/cmd_vel`
 

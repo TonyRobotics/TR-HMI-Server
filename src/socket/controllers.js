@@ -3,7 +3,6 @@ const {
     pubCmdVelMsg
 } = require('../roscontrol/cmd_vel');
 
-
 /**
  * 底盘 运动控制
  */
