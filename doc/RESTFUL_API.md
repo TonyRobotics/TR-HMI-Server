@@ -115,3 +115,25 @@
     }
 }
 ```
+
+### （二）、获取 ROS 状态信息
+
+- route: `/status/ros`
+- method: `GET`
+- request:
+- response body:
+
+```json
+{
+    "message": "success",
+    "data": {
+        "rosNodes": [ //正在运行中的 ros 节点列表
+            "/rosout",
+            "/tr_hmi_node"
+        ],
+        "rosServices": [ //正在运行中的 ros 服务列表
+            "/tr_hmi_node/get_loggers",
+        ]
+    }
+}
+```
