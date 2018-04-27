@@ -1,4 +1,5 @@
 const controllers = require('./controllers');
+const rosLogger = require('../utils/rosout');
 
 /**
  * 注册 socket io 业务路由
@@ -18,6 +19,30 @@ function registerRouters(io) {
 
         //send cmd_vel to ros 
         client.on('/cmd_vel', controllers.onCmdVel);
+
+        //ros out
+        client.on('/rosout/cmd', (req, fn) => {
+            if (req.method && req.method == 'start') {
+                rosLogger.startLogging((data) => {
+                    client.emit('/rosout/data', data);
+                });
+                fn({
+                    code: 200,
+                    message: 'success'
+                });
+            } else if (req.method == 'stop') {
+                rosLogger.stopLogging();
+                fn({
+                    code: 200,
+                    message: 'success'
+                })
+            } else {
+                fn({
+                    code: 500,
+                    message: 'failed: bad request'
+                })
+            }
+        });
     });
 }
 

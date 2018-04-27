@@ -28,6 +28,10 @@
             console.log('client disconnected.');
         });
 
+        socket.on('/rosout/data', (data) => {
+            console.log(data);
+        });
+
         document.getElementById('getSpeed').onclick = function () {
             socket.emit('/settings/speed', {
                 method: 'get',

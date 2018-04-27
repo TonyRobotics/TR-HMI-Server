@@ -2,6 +2,7 @@ const rosControl = require('../roscontrol');
 const {
     pubCmdVelMsg
 } = require('../roscontrol/cmd_vel');
+const rosLogger = require('../utils/rosout');
 
 /**
  * 底盘 运动控制
@@ -27,7 +28,7 @@ function onLaunchMode(req, fn) {
     } else {
         fn({
             code: 500,
-            message: 'bad request'
+            message: 'failde: bad request'
         });
         console.error('/launch_mode: invalid request data:', req);
     }
