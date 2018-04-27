@@ -1,0 +1,20 @@
+{
+  "id": "ros_nav_2d",
+  "label": "Nav 2D",
+  "category": "ROS",
+  "content": {
+    "type": "ros",
+    "url": "../../view_modules/ros_nav_2d/index.html",
+    "style": {
+      "height": "220px",
+      "width": "275px"
+    },
+    "setting": {
+      "URI": "ws://localhost:9090",
+      "Topic": "/move_base"
+    }
+  },
+  "attributes": {
+    "class": "fa fa-location-arrow"
+  }
+}

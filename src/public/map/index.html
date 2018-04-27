@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script src="easeljs.js"></script>
+<script src="eventemitter2.min.js"></script>
+<script src="roslib.js"></script>
+<script src="ros2d.js"></script>
+
+<script>
+	/**
+	 * Setup all visualization elements when the page is loaded.
+   * roslaunch rosbridge_server rosbridge_websocket.launch
+	 */
+	function init() {
+    // Connecting to ROS
+    // -----------------
+    var ros = new ROSLIB.Ros();
+
+    // If there is an error on the backend, an 'error' emit will be emitted.
+    ros.on('error', function(error) {
+       
+      console.log(error);
+    });
+
+    // Find out exactly when we made a connection.
+    ros.on('connection', function() {
+      console.log('Connection made!');
+       
+    });
+
+    ros.on('close', function() {
+      console.log('Connection closed.');
+       
+    });
+
+    // Create a connection to the rosbridge WebSocket server.
+    //ros.connect('ws://172.20.10.7:9090');
+    ros.connect('ws://192.168.5.108:9090');
+
+    // Publishing a Topic
+    // ------------------
+
+    // First, we create a Topic object with details of the topic's name and message type.
+    var cmdVel = new ROSLIB.Topic({
+      ros : ros,
+      name : '/cmd_vel',
+      messageType : 'geometry_msgs/Twist'
+    });
+
+    // Then we create the payload to be published. The object we pass in to ros.Message matches the
+    // fields defined in the geometry_msgs/Twist.msg definition.
+    var twist = new ROSLIB.Message({
+      linear : {
+        x : 0.1,
+        y : 0.2,
+        z : 0.3
+      },
+      angular : {
+        x : -0.1,
+        y : -0.2,
+        z : -0.3
+      }
+    });
+
+    // And finally, publish.
+    // cmdVel.publish(twist);
+
+    //Subscribing to a Topic
+    //----------------------
+
+    // Like when publishing a topic, we first create a Topic object with details of the topic's name
+    // and message type. Note that we can call publish or subscribe on the same topic object.
+    var odom = new ROSLIB.Topic({
+      ros : ros,
+      name : '/odom',
+      messageType : 'nav_msgs/Odometry'
+    });
+     
+    // Then we add a callback to be called every time a message is published on this topic.
+    odom.subscribe(function(message) {
+      //console.log('Received message on ' + odom.name + ': ');
+      //console.log(message.pose.pose.position);
+      //console.log(robotPosTmp);
+      //polygon.remPoint(robotPosTmp);
+      var robotPos = new ROSLIB.Vector3({
+        x : message.pose.pose.position.x,
+        y : message.pose.pose.position.y,
+        z : message.pose.pose.position.z
+      });
+      polygon.pointContainer.removeAllChildren();
+      polygon.addPoint(robotPos);	
+      // If desired, we can unsubscribe from the topic as well.
+      //odom.unsubscribe();
+    });
+ 
+    var globalPlan = new ROSLIB.Topic({
+      ros : ros,
+      name : '/move_base/TrajectoryPlannerROS/global_plan',
+      messageType : 'nav_msgs/Path'
+    });
+
+    var goal = new ROSLIB.Topic({
+      ros : ros,
+      name : '/move_base_simple/goal',
+      messageType : 'geometry_msgs/PoseStamped'
+    });
+
+    var v1 = new ROSLIB.Vector3({
+      x : 1,
+      y : 2,
+      z : 3
+    });
+    
+    var q1 = new ROSLIB.Quaternion({
+      x : 0.1,
+      y : 0.2,
+      z : 0.3,
+      w : 0.4
+    });
+    
+    var p = new ROSLIB.Pose({
+      position : v1,
+      orientation : q1
+    });
+    console.log(p);
+
+    //goal.publish(msgPoseStamped);
+    
+    // Then we add a callback to be called every time a message is published on this topic.
+    globalPlan.subscribe(function(message) {
+      //console.log('Received message on ' + globalPlan.name + ': ');
+      //console.log(message.poses);
+      polygonPlan.lineContainer.removeAllChildren();
+      polygonPlan.pointContainer.removeAllChildren();
+      
+      for(pose in message.poses){
+        console.log(message.poses[pose].pose.orientation);
+        var tmp = message.poses[pose];
+        polygonPlan.addPoint(message.poses[pose].pose.position);
+      }
+     
+      // If desired, we can unsubscribe from the topic as well.
+      //odom.unsubscribe();
+    });
+
+		// Create the main viewer.
+		var viewer = new ROS2D.Viewer({
+			divID : 'map',
+			width : 1024,
+			height : 1024
+    });
+    
+    // Setup the map client.
+    var gridClient = new ROS2D.OccupancyGridClient({
+      ros : ros,
+      rootObject : viewer.scene,
+      // Use this property in case of continuous updates			
+      continuous: true
+    });
+    // Scale the canvas to fit to the map
+    gridClient.on('change', function() {
+      viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+      viewer.shift(gridClient.currentGrid.pose.position.x, gridClient.currentGrid.pose.position.y);
+    });
+
+		// Callback functions when there is mouse interaction with the polygon
+		var clickedPolygon = false;
+		var selectedPointIndex = null;
+    
+		var pointCallBack = function(type, event, index) {
+      //console.log(type);
+      //console.log(event);
+      //console.log(index);
+			if (type === 'mousedown') {
+				if (event.nativeEvent.shiftKey === true) {
+					polygon.remPoint(index);
+				}
+				else {
+					selectedPointIndex = index;
+				}
+			}
+			clickedPolygon = true;
+		};
+
+		var lineCallBack = function(type, event, index) {
+			if (type === 'mousedown') {
+				if (event.nativeEvent.ctrlKey === true) {
+					//polygon.splitLine(index);
+				}
+			}
+			clickedPolygon = true;
+		}
+
+		// Create the polygon
+		var polygon = new ROS2D.PolygonMarker({
+			pointCallBack : pointCallBack,
+      lineCallBack : lineCallBack,
+      fillColor : createjs.Graphics.getRGB(0, 0, 0, 0),
+      lineSize : 0.0001,
+      pointSize : 0.1
+    });
+    
+    // Create the plan polygon
+		var polygonPlan = new ROS2D.PolygonMarker({
+      lineColor : createjs.Graphics.getRGB(255, 255, 255, 1),
+      pointColor : createjs.Graphics.getRGB(0, 255, 0, 1),
+      fillColor : createjs.Graphics.getRGB(0, 0, 0, 0),
+			pointCallBack : pointCallBack,
+      lineCallBack : lineCallBack,
+      lineSize : 0.001,
+      pointSize : 0.01
+    });
+    
+    // Create the goal polygon
+		var polygonGoal = new ROS2D.PolygonMarker({
+      lineColor : createjs.Graphics.getRGB(255, 255, 255, 1),
+      pointColor : createjs.Graphics.getRGB(0, 255, 255, 1),
+      fillColor : createjs.Graphics.getRGB(0, 0, 0, 0),
+			pointCallBack : pointCallBack,
+      lineCallBack : lineCallBack,
+      lineSize : 0.001,
+      pointSize : 0.1
+		});
+	
+		// Add the polygon to the viewer
+    viewer.scene.addChild(polygon);
+    viewer.scene.addChild(polygonPlan);
+    viewer.scene.addChild(polygonGoal);
+
+		// Event listeners for mouse interaction with the stage
+		viewer.scene.mouseMoveOutside = false; // doesn't seem to work
+
+		viewer.scene.addEventListener('stagemousemove', function(event) {
+			// Move point when it's dragged
+			if (selectedPointIndex !== null) {
+				var pos = viewer.scene.globalToRos(event.stageX, event.stageY);
+				polygon.movePoint(selectedPointIndex, pos);
+			}
+		});
+  
+    var goalPosTmp = null;
+		viewer.scene.addEventListener('stagemouseup', function(event) {
+			// Add point when not clicked on the polygon
+			if (selectedPointIndex !== null) {
+				selectedPointIndex = null;
+			}
+			else if (viewer.scene.mouseInBounds === true && clickedPolygon === false) {
+        if(goalPosTmp != null) {
+          polygonGoal.remPoint(goalPosTmp);
+        }
+        
+        goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
+        polygonGoal.addPoint(goalPosTmp);			
+        p.position.x = goalPosTmp.position.x;
+        p.position.y = goalPosTmp.position.y;
+        p.orientation
+        console.log(p);
+        //goal.publish(msgPoseStamped);
+			}
+			clickedPolygon = false;
+		});
+
+	}
+  //设置目标点角度
+  function setOrientation(angel) {
+    //角度转四元数
+    alert(angel);
+    window.postMessage('只能传递一个字符串类型的参数');
+
+  }
+</script>
+</head>
+
+<body onload="init()" style="margin:0px;">
+	<div id="map"></div>
+</body>
+</html>
