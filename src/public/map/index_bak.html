@@ -1,68 +1,71 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8" />
+  <meta charset="utf-8" />
 
-<script src="easeljs.min.js"></script>
-<script src="eventemitter2.min.js"></script>
-<script src="roslib.js"></script>
-<script src="ros2d.js"></script>
-<script src="nav2d.js"></script>
+  <script src="./js/easeljs.min.js"></script>
+  <script src="./js/eventemitter2.min.js"></script>
+  <script src="./js/roslib.js"></script>
+  <script src="./js/ros2d.js"></script>
+  <script src="./js/nav2d.js"></script>
 
-<script>
-  function getQueryString(name) { 
-		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
-		var r = window.location.search.substr(1).match(reg); 
-		if (r != null) return unescape(r[2]); return null; 
-	} 
-	//获取参数get param：mqtt_server_uri
-	//'ws://192.168.2.47:9090'
-	var ws_url = "ws://192.168.2.91:9090";
-  //ws_url = getQueryString("URI");
-  var topic = "/move_base";
-	//topic = getQueryString("Topic");
-	
-
-  /**
-   * Setup all visualization elements when the page is loaded. 
-   */
-  function init(ws_url,topic) {
-    if(ws_url == null) {
-      console.log("[RoboWare Viewer] Error:ws_url is null!");
-      return;
+  <script>
+    function getQueryString(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
     }
-    if(topic == null) {
-      console.log("[RoboWare Viewer] Error:topic is null!");
-      return;
+    //获取参数get param：mqtt_server_uri
+    //'ws://192.168.2.47:9090'
+    var ws_url = "ws://192.168.2.91:9090";
+    //ws_url = getQueryString("URI");
+    var topic = "/move_base";
+    //topic = getQueryString("Topic");
+
+
+    /**
+     * Setup all visualization elements when the page is loaded. 
+     */
+    function init(ws_url, topic) {
+      if (ws_url == null) {
+        console.log("[RoboWare Viewer] Error:ws_url is null!");
+        return;
+      }
+      if (topic == null) {
+        console.log("[RoboWare Viewer] Error:topic is null!");
+        return;
+      }
+
+      // Connect to ROS.
+      var ros = new ROSLIB.Ros({
+        url: ws_url
+      });
+
+      // Create the main viewer.
+      var viewer = new ROS2D.Viewer({
+        divID: 'nav',
+        width: window.innerWidth,
+        height: window.innerHeight,
+        antialias: true
+      });
+
+      // Setup the nav client.
+      var nav = NAV2D.OccupancyGridClientNav({
+        ros: ros,
+        rootObject: viewer.scene,
+        viewer: viewer,
+        serverName: topic,
+        image: './img/arrow_32.png'
+      });
     }
-     
-    // Connect to ROS.
-    var ros = new ROSLIB.Ros({
-      url : ws_url
-    });
-
-    // Create the main viewer.
-    var viewer = new ROS2D.Viewer({
-      divID : 'nav',
-      width : window.innerWidth,
-      height : window.innerHeight,
-      antialias : true
-    });
-
-    // Setup the nav client.
-    var nav = NAV2D.OccupancyGridClientNav({
-      ros : ros,
-      rootObject : viewer.scene,
-      viewer : viewer,
-      serverName : topic,
-      image : 'arrow_32.png'
-    });
-  }
-</script>
+  </script>
 </head>
 
 <body onload="init(ws_url,topic);" style="margin:0px;overflow-x:hidden;overflow-y:hidden;">
-  
+
   <div id="nav"></div>
 </body>
+
 </html>

@@ -4,7 +4,7 @@
   "category": "ROS",
   "content": {
     "type": "ros",
-    "url": "../../view_modules/ros_nav_2d/index.html",
+    "url": "./index.html",
     "style": {
       "height": "220px",
       "width": "275px"
