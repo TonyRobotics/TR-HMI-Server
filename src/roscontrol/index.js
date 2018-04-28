@@ -16,6 +16,7 @@ const FileSync = require('lowdb/adapters/FileSync');
 const db = low(new FileSync(path.join(__dirname, '../data/db.json')));
 
 const rosnodejs = require('rosnodejs');
+const initialPose = require('./initialPose');
 
 let currentLaunchPid,
     mapServerPid;
@@ -75,7 +76,23 @@ function reloadMap(mapName, callback) {
     mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${path.join(mapDir,mapName)}`], callback);
 }
 
+/**
+ * 监听地图点击目标点 
+ */
+function subscribeMapGoal(callback) {
+    rosnodejs.nh.subscribe('/tr_hmi/goal', 'geometry_msgs/PoseStamped', callback);
+}
+
+/**
+ * 设置初始点
+ */
+function pubInitialPose(pose, angle) {
+    initialPose.pubInitialPose(pose, angle);
+}
+
 module.exports.MODE = MODE;
 module.exports.startHMIBridgeNode = startHMIBridgeNode;
 module.exports.toggleRosLaunchMode = toggleRosLaunchMode;
 module.exports.reloadMap = reloadMap;
+module.exports.subscribeMapGoal = subscribeMapGoal;
+module.exports.pubInitialPose = pubInitialPose;
