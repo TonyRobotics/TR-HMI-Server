@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="utf-8" />
 
-<script src="easeljs.js"></script>
-<script src="eventemitter2.min.js"></script>
-<script src="roslib.js"></script>
-<script src="ros2d.js"></script>
+<script src="/js/easeljs.js"></script>
+<script src="/js/eventemitter2.min.js"></script>
+<script src="/js/roslib.js"></script>
+<script src="/js/ros2d.js"></script>
 
 <script>
 	/**
@@ -37,8 +38,7 @@
 
     // Create a connection to the rosbridge WebSocket server.
     // ros.connect('ws://172.20.10.7:9090');
-    // ros.connect('ws://192.168.5.108:9090');
-    ros.connect('ws://192.168.2.91:9090');
+    ros.connect(`ws://${window.location.hostname}:9090`);
 
     // Publishing a Topic
     // ------------------
@@ -326,6 +326,7 @@
 </head>
 
 <body onload="init()" style="margin:0px;">
-	<div id="map"></div>
+  <div id="map"></div>
 </body>
+
 </html>

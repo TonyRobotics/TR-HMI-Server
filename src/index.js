@@ -5,13 +5,14 @@
 'use strict'
 
 const rosControl = require('./roscontrol');
+const restApp = require('./restful');
 const servSocket = require('./socket');
 
 //default server port
 const PORT = 3000;
 
 //bind socket and register routers
-let server = require('http').Server(require('./restful').callback()),
+let server = require('http').Server(restApp.callback()),
     io = require('socket.io')(server);
 servSocket(io);
 

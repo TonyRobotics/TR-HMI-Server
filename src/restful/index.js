@@ -25,6 +25,7 @@ app.use(json());
 app.use(bodyParser());
 
 app.use(serve(path.join(__dirname, '../public')));
+app.use(serve(path.join(__dirname, '../public/map')));
 
 app.use(controller());
 
