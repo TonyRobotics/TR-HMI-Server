@@ -37,8 +37,8 @@
     });
 
     // Create a connection to the rosbridge WebSocket server.
-    // ros.connect('ws://172.20.10.7:9090');
-    ros.connect(`ws://${window.location.hostname}:9090`);
+    ros.connect('ws://192.168.2.91:9090');
+    //ros.connect(`ws://${window.location.hostname}:9090`);
 
     // Publishing a Topic
     // ------------------
@@ -206,7 +206,7 @@
 
     // marker for the robot
     var robotMarker = null;
-    var use_image = "arrow_64.png";
+    var use_image = "img/arrow_64.png";
     robotMarker = new ROS2D.NavigationImage({
       size: 0.1,
       image: use_image,
@@ -302,7 +302,18 @@
         p.position.y = goalPosTmp.y;
         //console.log(p);
         //openDialog(p);
-        goal.publish(p);
+        var poseStamped = {
+          header : {
+            seq : 1,
+            stamp :{
+              secs : 0,
+              nsecs : 0
+            },
+            frame_id:"map"
+          },
+          pose :p
+        };
+        goal.publish(poseStamped);
         //goal.publish(msgPoseStamped);
 			}
 			clickedPolygon = false;
