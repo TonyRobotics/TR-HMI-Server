@@ -9,10 +9,16 @@ const {
     simpleSpawn,
     killSpawn
 } = require('../utils/simspawn');
+const path = require('path');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+
+const db = low(new FileSync(path.join(__dirname, '../data/db.json')));
 
 const rosnodejs = require('rosnodejs');
 
-let currentLaunchPid;
+let currentLaunchPid,
+    mapServerPid;
 
 /**
  * ros launch x ,工作模式
@@ -57,6 +63,19 @@ function toggleRosLaunchMode(mode) {
     }
 }
 
+/**
+ * 加载/切换地图
+ */
+function reloadMap(mapName, callback) {
+    if (mapServerPid) {
+        killSpawn(mapServerPid);
+        mapServerPid = null;
+    }
+    let mapDir = db.get('configs.mapsDir').value();
+    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${path.join(mapDir,mapName)}`], callback);
+}
+
 module.exports.MODE = MODE;
 module.exports.startHMIBridgeNode = startHMIBridgeNode;
 module.exports.toggleRosLaunchMode = toggleRosLaunchMode;
+module.exports.reloadMap = reloadMap;

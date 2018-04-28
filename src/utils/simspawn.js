@@ -28,14 +28,19 @@ function simpleSpawn(command, args, callback) {
     });
     sp.stderr.on('data', (data) => {
         console.log(`stderr:${command} ${args}\n${data}`);
-
-        if (callback) {
+        
+        if (data && callback) {
             callback(data);
         }
     });
+
     sp.on('close', (code, signal) => {
         console.log(`sp end:${command} ${args}\n ${code || ''} ${signal}`);
     });
+
+    sp.on('error', (err) => {
+        console.log(`sp error:${command} ${args}\n ${err}`);
+    })
 
     allProcesses.push({
         pid: sp.pid,

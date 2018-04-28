@@ -5,5 +5,8 @@
       "vx": "2",
       "vt": 1
     }
+  },
+  "configs": {
+    "mapsDir": "/home/dominic/repo/tr05/tr05_navigation/maps/"
   }
 }

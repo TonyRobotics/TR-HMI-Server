@@ -94,13 +94,13 @@
     "message":"success",
     "data":{
         "mem": {
-            "total": 7865.546875,//内存总量（MB）
-            "free": 305.9140625, //空闲内存
-            "freeMemPercentage": 0.03889291709293895 //空闲内存占比
+            "total": "7865.54MB",//内存总量（MB）
+            "free": "305.91MB", //空闲内存
+            "freeMemPercentage": "3.89%" //空闲内存占比
         },
         "cpu": {
             "count": 4, //cpu 核心数
-            "usage": 0.14360313315926898 //CPU 使用率
+            "usage": "14.36%" //CPU 使用率
         },
         "disk": {
             "total": "50G", // 硬盘总量 GB
@@ -109,7 +109,7 @@
             "freeDiskPercentage": "83%" //剩余空间占比
         },
         "system": {
-            "uptime": 26078, //开机时间 （秒）
+            "uptime": 326, //开机时间 （分钟）
             "loadavg": 1.32568359375 //负载
         }
     }
@@ -135,5 +135,40 @@
             "/tr_hmi_node/get_loggers",
         ]
     }
+}
+```
+
+## 三、地图相关
+
+### （一）、获取地图列表
+
+- route: `/map/list`
+- method: `GET`
+- request:
+- response body:
+
+```json
+{
+    "message":"success",
+    "data":{
+        "maps":[
+            "my_map.yaml",
+            "map2.yaml"
+        ]
+    }
+}
+```
+
+### （二）、切换地图
+
+- route: `/map/load`
+- method:`GET`
+- query:
+  - `mapName`: 地图名称 ，如 `mymap.yaml`
+- response:
+
+```json
+{
+    "message":"success"
 }
 ```
