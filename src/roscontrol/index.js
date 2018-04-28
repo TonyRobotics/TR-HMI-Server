@@ -9,10 +9,17 @@ const {
     simpleSpawn,
     killSpawn
 } = require('../utils/simspawn');
+const path = require('path');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+
+const db = low(new FileSync(path.join(__dirname, '../data/db.json')));
 
 const rosnodejs = require('rosnodejs');
+const initialPose = require('./initialPose');
 
-let currentLaunchPid;
+let currentLaunchPid,
+    mapServerPid;
 
 /**
  * ros launch x ,工作模式
@@ -57,6 +64,35 @@ function toggleRosLaunchMode(mode) {
     }
 }
 
+/**
+ * 加载/切换地图
+ */
+function reloadMap(mapName, callback) {
+    if (mapServerPid) {
+        killSpawn(mapServerPid);
+        mapServerPid = null;
+    }
+    let mapDir = db.get('configs.mapsDir').value();
+    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${path.join(mapDir,mapName)}`], callback);
+}
+
+/**
+ * 监听地图点击目标点 
+ */
+function subscribeMapGoal(callback) {
+    rosnodejs.nh.subscribe('/tr_hmi/goal', 'geometry_msgs/PoseStamped', callback);
+}
+
+/**
+ * 设置初始点
+ */
+function pubInitialPose(pose, angle) {
+    initialPose.pubInitialPose(pose, angle);
+}
+
 module.exports.MODE = MODE;
 module.exports.startHMIBridgeNode = startHMIBridgeNode;
 module.exports.toggleRosLaunchMode = toggleRosLaunchMode;
+module.exports.reloadMap = reloadMap;
+module.exports.subscribeMapGoal = subscribeMapGoal;
+module.exports.pubInitialPose = pubInitialPose;

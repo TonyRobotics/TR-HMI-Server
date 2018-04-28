@@ -16,17 +16,17 @@ module.exports = () => new Promise(async (resolve, reject) => {
         let cpuUsage = await osUtils.cpuUsage();
         resolve({
             mem: {
-                total: osUtils.totalmem(),
-                free: osUtils.freemem(),
-                freeMemPercentage: osUtils.freememPercentage()
+                total: `${osUtils.totalmem().toFixed(2)}MB`,
+                free: `${osUtils.freemem().toFixed(2)}MB`,
+                freeMemPercentage: `${(osUtils.freememPercentage() * 100).toFixed(2)}%`
             },
             cpu: {
                 count: osUtils.cpuCount(),
-                usage: cpuUsage
+                usage: `${(cpuUsage * 100).toFixed(2)}%`
             },
             disk: diskInfo,
             system: {
-                uptime: osUtils.sysUptime(),
+                uptime: (osUtils.sysUptime() / 60).toFixed(0),
                 loadavg: osUtils.loadavg()
             }
         });

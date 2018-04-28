@@ -28,8 +28,8 @@
             console.log('client disconnected.');
         });
 
-        socket.on('/rosout/data', (data) => {
-            console.log(data);
+        socket.on('/global/map/goal/click', (data) => {
+            console.log('map click:',data);
         });
 
         document.getElementById('getSpeed').onclick = function () {
