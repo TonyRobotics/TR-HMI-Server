@@ -64,44 +64,91 @@
 - data: ros `nav_msgs/Odometry` 对象
 
 ```json
-header: 
-  seq: 1418
-  stamp: 
-    secs: 1502268092
-    nsecs: 930032885
-  frame_id: "odom"
-child_frame_id: "base_link"
-pose: 
-  pose: 
-    position: 
-      x: -3.25253647864
-      y: -1.03167062472
-      z: 0.0
-    orientation: 
-      x: 0.0
-      y: -0.0
-      z: -0.269944078072
-      w: -0.962876001733
-  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-twist: 
-  twist: 
-    linear: 
-      x: 0.0
-      y: 0.0
-      z: 0.0
-    angular: 
-      x: 0.0
-      y: 0.0
-      z: 0.0
-  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
+{
+    "header": {
+        "seq": 1418,
+        "stamp": {
+            "secs": 1502268092,
+            "nsecs": 930032885
+        },
+        "frame_id": "odom"
+    },
+    "child_frame_id": "base_link",
+    "pose": {
+        "pose": {
+            "position": {
+                "x": -3.25253647864, // UI 展示
+                "y": -1.03167062472, //UI 展示
+                "z": 0.0 //UI 展示
+            },
+            "orientation": {
+                "x": 0.0, //UI 展示
+                "y": -0.0, //UI 展示
+                "z": -0.269944078072, //UI 展示
+                "w": -0.962876001733 //UI 展示
+            }
+        },
+        "covariance": []
+    },
+    "twist": {
+        "twist": {
+            "linear": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "angular": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        "covariance": []
+    }
+}
 ```
 
-## 五、地图点击事件
+## 五、目标点
+
+### 1、地图目标点点击事件
 
 > 监听 topic: `/global/map/goal/click`
 
--data: ros `geometry_msgs/PoseStamped` 对象
+- response:
 
 ```json
+{
+  //... ros `geometry_msgs/PoseStamped` 对象,
+  //结构参考上述 Odometry
+  //客户端不需处理此数据，只需在后续动作中原样回传即可；
+}
+```
+
+### 2、设置目标点为初始点
+
+> 发送 topic: `/global/map/goal/angle`
+
+- request 参数：
+
+```json
+{
+  "pose":{
+    //... 监听点击事件得到的 PoseStamped 对象
+  },
+  "angle":180 //用户设定的方向
+}
+```
+
+### 3、导航到目标点（导航模式）
+
+> 发送topic: `/move_base_simple/goal`
+
+- request 参数：
+
+```json
+{
+  "pose":{
+    //... 监听点击事件得到的 PoseStamped 对象
+  }
+}
 ```
