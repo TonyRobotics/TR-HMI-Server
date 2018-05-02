@@ -1,6 +1,14 @@
+body {
+    background-color: #7E7E7E;
+}
+
 #dataViewers {
     position: fixed;
     display: block;
     left: 16px;
     bottom: 16px;
+}
+
+#map canvas {
+    width: 100%;
 }

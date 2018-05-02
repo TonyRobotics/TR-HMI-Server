@@ -10,6 +10,7 @@
   <script src="./js/ros2d.js"></script>
 
   <script>
+    var viewer;
     /**
      * Setup all visualization elements when the page is loaded.
      * roslaunch rosbridge_server rosbridge_websocket.launch
@@ -184,7 +185,7 @@
       });
 
       // Create the main viewer.
-      var viewer = new ROS2D.Viewer({
+      viewer = new ROS2D.Viewer({
         divID: 'map',
         width: 1024,
         height: 1024
@@ -222,6 +223,7 @@
       } else {
         stage = viewer.scene.getStage();
       }
+
       var updateRobotPosition = function (pose, orientation) {
         // update the robots position on the map
         robotMarker.x = pose.x;
@@ -297,25 +299,21 @@
           polygonGoal.addPoint(goalPosTmp);
           p.position.x = goalPosTmp.x;
           p.position.y = goalPosTmp.y;
-          //console.log(p);
-          //openDialog(p);
           var poseStamped = {
             header: {
-              seq: 1,
-              stamp: {
-                secs: 0,
-                nsecs: 0
-              },
+              //   seq: 1,
+              //   stamp: {
+              //     secs: 0,
+              //     nsecs: 0
+              //   },
               frame_id: "map"
             },
             pose: p
           };
           goal.publish(poseStamped);
-          //goal.publish(msgPoseStamped);
         }
         clickedPolygon = false;
       });
-
     }
     //打开对话框
     function openDialog(pose) {
@@ -328,7 +326,6 @@
       //角度转四元数
       //alert(angel);
       //window.postMessage('只能传递一个字符串类型的参数');
-
     }
   </script>
 </head>
@@ -349,10 +346,9 @@
      * 更新界面实时位置数据显示
      */
     function updatePositionData(position, orientation) {
-      var posData = `Position:[x:${position.x} y:${position.y} z:${position.z}] `;
-      var orieData = `Orientation:[x:${orientation.x} y:${orientation.y} z:${orientation.z} w:${orientation.w}]`;
-      posDataSpan.innerText = posData;
-      orieDataSpan.innerText = orieData;
+      posDataSpan.innerText = `Position:[x:${position.x}  y:${position.y}  z:${position.z}] `;
+      orieDataSpan.innerText =
+        `Orientation:[x:${orientation.x}  y:${orientation.y}  z:${orientation.z}  w:${orientation.w}]`;
     }
   </script>
 </body>
