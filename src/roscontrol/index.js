@@ -16,7 +16,9 @@ const FileSync = require('lowdb/adapters/FileSync');
 const db = low(new FileSync(path.join(__dirname, '../data/db.json')));
 
 const rosnodejs = require('rosnodejs');
-const initialPose = require('./initialPose');
+const initialPose = require('./lib/initialPose');
+const cmd_vel = require('./lib/cmd_vel');
+const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
 
 let currentLaunchPid,
     mapServerPid;
@@ -87,12 +89,30 @@ function subscribeMapGoal(callback) {
  * 设置初始点
  */
 function pubInitialPose(pose, angle) {
-    initialPose.pubInitialPose(pose, angle);
+    initialPose.pubInitialPose(pose, angle, rosnodejs.nh);
 }
 
-module.exports.MODE = MODE;
-module.exports.startHMIBridgeNode = startHMIBridgeNode;
-module.exports.toggleRosLaunchMode = toggleRosLaunchMode;
-module.exports.reloadMap = reloadMap;
-module.exports.subscribeMapGoal = subscribeMapGoal;
-module.exports.pubInitialPose = pubInitialPose;
+/**
+ * 发送移动控制
+ */
+function pubCmdVelMsg(vx, vt) {
+    cmd_vel.pubCmdVelMsg(vx, vt, rosnodejs.nh);
+}
+
+/**
+ * 发布导航目标点
+ */
+function pubMoveGoalMsg(pose) {
+    moveBaseSimpleGoal.pubGoalMsg(pose, rosnodejs.nh);
+}
+
+module.exports = {
+    'MODE': MODE,
+    'startHMIBridgeNode': startHMIBridgeNode,
+    'toggleRosLaunchMode': toggleRosLaunchMode,
+    'reloadMap': reloadMap,
+    'subscribeMapGoal': subscribeMapGoal,
+    'pubInitialPose': pubInitialPose,
+    'pubCmdVelMsg': pubCmdVelMsg,
+    'pubMoveBaseSimpleGoalMsg': pubMoveGoalMsg,
+}

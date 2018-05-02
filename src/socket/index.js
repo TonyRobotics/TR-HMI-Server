@@ -1,5 +1,4 @@
 const controllers = require('./controllers');
-const rosLogger = require('../utils/rosout');
 const rosCtrl = require('../roscontrol');
 
 /**
@@ -23,43 +22,13 @@ function registerRouters(io, callback) {
 
         //ros out
         client.on('/rosout/cmd', (req, fn) => {
-            if (req.method && req.method == 'start') {
-                rosLogger.startLogging((data) => {
-                    client.emit('/rosout/data', data);
-                });
-                fn({
-                    code: 200,
-                    message: 'success'
-                });
-            } else if (req.method == 'stop') {
-                rosLogger.stopLogging();
-                fn({
-                    code: 200,
-                    message: 'success'
-                })
-            } else {
-                fn({
-                    code: 500,
-                    message: 'failed: bad request'
-                })
-            }
+            controllers.onRosOutCmd(req, fn, client);
         });
 
         //orientation set from client
-        client.on('/global/map/goal/angle', (req, fn) => {
-            if (req.pose && req.angle) {
-                rosCtrl.pubInitialPose(req.pose, req.angle);
-                fn({
-                    code: 200,
-                    message: 'success'
-                })
-            } else {
-                fn({
-                    code: 500,
-                    message: 'failed: pose and angle all required'
-                })
-            }
-        });
+        client.on('/global/map/goal/angle', controllers.onMapInitialAngle);
+
+        client.on('/move_base_simple/goal', controllers.onMoveBaseSimpleGoal);
 
         if (callback) {
             callback(client);

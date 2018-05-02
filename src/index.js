@@ -33,6 +33,5 @@ rosControl.subscribeMapGoal((msg) => {
     io.sockets.emit('/global/map/goal/click', msg);
 });
 
-
 //finally start the server
 server.listen(process.env.PORT || PORT);

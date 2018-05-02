@@ -33,6 +33,7 @@ function pubInitialPose(pose, angle, rosNode) {
         rosNode = rosnodejs.nh;
         if (!rosNode) {
             console.error('could not get node handler for /initialpose');
+            return;
         }
     }
     if (!initialPose) {
@@ -44,14 +45,14 @@ function pubInitialPose(pose, angle, rosNode) {
     let _covariance = new Float64Array([]);
 
     let poseWithCovariance = new PoseWithCovariance({
-        header: {
-            seq: 1,
-            stamp: {
-                secs: 0,
-                nsecs: 0
-            },
-            frame_id: "map"
-        },
+        // header: {
+        //     seq: 1,
+        //     stamp: {
+        //         secs: 0,
+        //         nsecs: 0
+        //     },
+        //     frame_id: "map"
+        // },
         'pose': pose.pose
         // covariance: _covariance
     });

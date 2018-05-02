@@ -14,7 +14,7 @@ const rosCtrl = require('../../roscontrol');
 let fn_listMap = async (ctx, next) => {
     let mapDir = db.get('configs.mapsDir').value();
     try {
-        let maps = fs.readdirSync(mapDir).map((v) => {
+        let maps = fs.readdirSync(mapDir).filter((v) => {
             let s = v.split('.');
             return s[s.length - 1] == 'yaml';
         });
