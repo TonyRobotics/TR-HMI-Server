@@ -1,0 +1,38 @@
+<html>
+
+<head></head>
+
+<body>
+    <p id="msg">Loading......</p>
+    <script>
+        var ua = navigator.userAgent.toLowerCase();
+        let url, link;
+        if (/iphone|ipad|ipod/.test(ua)) {
+            url = `itms-services://?action=download-manifest&url=http://${window.location.pathname}/ios/tr-hmi.plist`;
+            let a = document.createElement('a');
+            a.href = url;
+            a.innerText = 'TR-HMI.ipa'
+            a.click();
+            link = a;
+        } else if (/android/.test(ua)) {
+            // alert("android");
+            let a = document.createElement('a');
+            url = `${window.location.pathname}/android/tr-hmi.apk`;
+            a.href = url;
+            a.innerText = 'TR-HMI.apk'
+            a.download = 'tr-hmi.apk';
+            a.click();
+            link = a;
+        } else {
+            // window.location.href = `${window.location.pathname}/android/tr-hmi.apk`;
+            alert('请使用手机访问！');
+        }
+        if (link) {
+            let p = document.getElementById('msg');
+            p.innerText = '如果没有自动下载，请点击以下链接手动下载：';
+            p.appendChild(link);
+        }
+    </script>
+</body>
+
+</html>
