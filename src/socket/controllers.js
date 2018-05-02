@@ -1,7 +1,4 @@
 const rosControl = require('../roscontrol');
-const {
-    pubCmdVelMsg
-} = require('../roscontrol/cmd_vel');
 const rosLogger = require('../utils/rosout');
 
 /**
@@ -9,7 +6,7 @@ const rosLogger = require('../utils/rosout');
  */
 function onCmdVel(req, fn) {
     if (req.vx && req.vt) {
-        pubCmdVelMsg(req.vx, req.vt);
+        rosControl.pubCmdVelMsg(req.vx, req.vt);
     } else {
         console.error('/cmd_vel: invalid request data:', req);
     }
@@ -21,20 +18,103 @@ function onCmdVel(req, fn) {
 function onLaunchMode(req, fn) {
     if (req.mode) {
         rosControl.toggleRosLaunchMode(req.mode);
-        fn({
-            code: 200,
-            message: 'success'
-        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            });
+        }
     } else {
-        fn({
-            code: 500,
-            message: 'failde: bad request'
-        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failde: bad request'
+            });
+        }
         console.error('/launch_mode: invalid request data:', req);
     }
 }
 
+/**
+ * 实时rosout 日志打印
+ */
+function onRosOutCmd(req, fn, client) {
+    if (req.method && req.method == 'start') {
+        rosLogger.startLogging((data) => {
+            client.emit('/rosout/data', data);
+        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            });
+        }
+    } else if (req.method == 'stop') {
+        rosLogger.stopLogging();
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            })
+        }
+    } else {
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failed: bad request'
+            })
+        }
+    }
+}
 
+/**
+ * 初始点角度设置
+ */
+function onMapInitialAngle(req, fn) {
+    if (req.pose && req.angle) {
+        rosControl.pubInitialPose(req.pose, req.angle);
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            })
+        }
+    } else {
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failed: pose and angle all required'
+            })
+        }
+    }
+}
 
-module.exports.onLaunchMode = onLaunchMode;
-module.exports.onCmdVel = onCmdVel;
+/**
+ * 设定导航目标点
+ */
+function onMoveBaseSimpleGoal(req, fn) {
+    if (req.pose) {
+        rosControl.pubMoveBaseSimpleGoalMsg(req.pose);
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            });
+        }
+    } else {
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failed: pose required'
+            });
+        }
+    }
+}
+
+module.exports = {
+    'onLaunchMode': onLaunchMode,
+    'onCmdVel': onCmdVel,
+    'onRosOutCmd': onRosOutCmd,
+    'onMapInitialAngle': onMapInitialAngle,
+    'onMoveBaseSimpleGoal': onMoveBaseSimpleGoal,
+}

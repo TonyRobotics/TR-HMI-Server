@@ -1,7 +1,7 @@
 'use strict';
 
 const rosnodejs = require('rosnodejs');
-const nodeMgr = require('./rosnodes/nodeManager');
+const nodeMgr = require('../../rosnodes/nodeManager');
 
 let turtlesimPid = nodeMgr.simpleSpawn('roslaunch', ['tr05_controller', 'tr05_controller.launch']);
 let turtlesimPid = nodeMgr.simpleSpawn('roslaunch', ['tr05_navigation', 'tr05_mapping.launch']);

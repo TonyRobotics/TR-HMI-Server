@@ -9,17 +9,15 @@ const {
     simpleSpawn,
     killSpawn
 } = require('../utils/simspawn');
-const path = require('path');
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-
-const db = low(new FileSync(path.join(__dirname, '../data/db.json')));
 
 const rosnodejs = require('rosnodejs');
-const initialPose = require('./initialPose');
+const initialPose = require('./lib/initialPose');
+const cmd_vel = require('./lib/cmd_vel');
+const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
 
 let currentLaunchPid,
-    mapServerPid;
+    mapServerPid,
+    mapSaverPid;
 
 /**
  * ros launch x ,工作模式
@@ -67,13 +65,24 @@ function toggleRosLaunchMode(mode) {
 /**
  * 加载/切换地图
  */
-function reloadMap(mapName, callback) {
+function reloadMap(fullName, callback) {
     if (mapServerPid) {
         killSpawn(mapServerPid);
         mapServerPid = null;
     }
-    let mapDir = db.get('configs.mapsDir').value();
-    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${path.join(mapDir,mapName)}`], callback);
+    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}.yaml`], callback);
+}
+
+/**
+ * 保存地图
+ * @param fullName full path and name 
+ */
+function saveMap(fullName) {
+    if (mapSaverPid) {
+        killSpawn(mapSaverPid);
+        mapSaverPid = null;
+    }
+    mapSaverPid = simpleSpawn('rosrun', ['map_server', 'map_saver', '-f', fullName]);
 }
 
 /**
@@ -84,15 +93,42 @@ function subscribeMapGoal(callback) {
 }
 
 /**
+ * 监听机器人实时位置
+ */
+function subscribeOdom(callback) {
+    rosnodejs.nh.subscribe('/odom', 'nav_msgs/Odometry', callback);
+}
+
+/**
  * 设置初始点
  */
 function pubInitialPose(pose, angle) {
-    initialPose.pubInitialPose(pose, angle);
+    initialPose.pubInitialPose(pose, angle, rosnodejs.nh);
 }
 
-module.exports.MODE = MODE;
-module.exports.startHMIBridgeNode = startHMIBridgeNode;
-module.exports.toggleRosLaunchMode = toggleRosLaunchMode;
-module.exports.reloadMap = reloadMap;
-module.exports.subscribeMapGoal = subscribeMapGoal;
-module.exports.pubInitialPose = pubInitialPose;
+/**
+ * 发送移动控制
+ */
+function pubCmdVelMsg(vx, vt) {
+    cmd_vel.pubCmdVelMsg(vx, vt, rosnodejs.nh);
+}
+
+/**
+ * 发布导航目标点
+ */
+function pubMoveGoalMsg(pose) {
+    moveBaseSimpleGoal.pubGoalMsg(pose, rosnodejs.nh);
+}
+
+module.exports = {
+    'MODE': MODE,
+    'startHMIBridgeNode': startHMIBridgeNode,
+    'toggleRosLaunchMode': toggleRosLaunchMode,
+    'reloadMap': reloadMap,
+    'saveMap': saveMap,
+    'subscribeMapGoal': subscribeMapGoal,
+    'subscribeOdom': subscribeOdom,
+    'pubInitialPose': pubInitialPose,
+    'pubCmdVelMsg': pubCmdVelMsg,
+    'pubMoveBaseSimpleGoalMsg': pubMoveGoalMsg,
+}
