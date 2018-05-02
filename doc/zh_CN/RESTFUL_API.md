@@ -152,20 +152,60 @@
     "message":"success",
     "data":{
         "maps":[
-            "my_map.yaml",
-            "map2.yaml"
+            "我的地图",
+            "map2"
         ]
     }
 }
 ```
 
-### （二）、切换地图
+### （二）、加载/切换地图
 
 - route: `/map/load`
 - method:`GET`
 - query:
-  - `mapName`: 地图名称 ，如 `mymap.yaml`
+  - `mapName`: 地图名称 ，如 `mymap`
 - response:
+
+```json
+{
+    "message":"success"
+}
+```
+
+### （三）、保存地图
+
+- route: `/map/save`
+- method: `POST`
+- request body :
+
+```json
+{
+    "mapName":"2105地图"
+}
+```
+
+- response:
+
+```json
+{
+    "message":"success"
+}
+```
+
+### （四）、删除地图
+
+- route: `/map/delete`
+- method: `POST`
+- request body:
+
+```json
+{
+    "mapName":"2105地图"
+}
+```
+
+- response body:
 
 ```json
 {

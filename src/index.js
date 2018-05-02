@@ -29,8 +29,12 @@ rosControl.startHMIBridgeNode((rosnode) => {
 
 //subscribe map click to set goal
 rosControl.subscribeMapGoal((msg) => {
-    console.log('msg:', msg);
     io.sockets.emit('/global/map/goal/click', msg);
+});
+
+//subscribe realtime odometry message
+rosControl.subscribeOdom((msg) => {
+    io.sockets.emit('/global/map/position', msg);
 });
 
 //finally start the server

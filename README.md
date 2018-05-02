@@ -7,3 +7,7 @@ TR 通用人机交互界面 ROS 层服务端
 1. [ROS 底盘服务部署文档](doc/zh_CN/DEPLOY.md)
 2. [Socket API 文档](doc/zh_CN/SOCKET_API.md)
 3. [Restful API 文档](doc/zh_CN/RESTFUL_API.md)
+
+## TODO
+
+1. 服务部署/启动时自动配置默认参数

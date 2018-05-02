@@ -56,3 +56,52 @@
 > 订阅 topic: `/rosout/data`
 
 - data : string 类型实时日志
+
+## 四、实时机器人位置
+
+> 监听 topic: `/global/map/position`
+
+- data: ros `nav_msgs/Odometry` 对象
+
+```json
+header: 
+  seq: 1418
+  stamp: 
+    secs: 1502268092
+    nsecs: 930032885
+  frame_id: "odom"
+child_frame_id: "base_link"
+pose: 
+  pose: 
+    position: 
+      x: -3.25253647864
+      y: -1.03167062472
+      z: 0.0
+    orientation: 
+      x: 0.0
+      y: -0.0
+      z: -0.269944078072
+      w: -0.962876001733
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+twist: 
+  twist: 
+    linear: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    angular: 
+      x: 0.0
+      y: 0.0
+      z: 0.0
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+```
+
+## 五、地图点击事件
+
+> 监听 topic: `/global/map/goal/click`
+
+-data: ros `geometry_msgs/PoseStamped` 对象
+
+```json
+```

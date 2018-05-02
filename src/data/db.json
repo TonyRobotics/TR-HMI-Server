@@ -2,11 +2,17 @@
   "settings": {
     "defaultMap": "2015.ymal",
     "maxSpeed": {
-      "maxVx": 1,
-      "maxVt": 1
+      "maxVx": 0.75,
+      "maxVt": 0.47
     }
   },
   "configs": {
     "mapsDir": "/home/dominic/repo/tr05/tr05_navigation/maps/"
-  }
+  },
+  "maps": [
+    {
+      "alias": "test",
+      "fileName": "mymap2"
+    }
+  ]
 }
