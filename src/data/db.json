@@ -1,9 +1,9 @@
 {
   "settings": {
-    "defaultMap": "2015.ymal",
+    "defaultMap": "2015.yaml",
     "maxSpeed": {
-      "maxVx": 46,
-      "maxVt": 3
+      "maxVx": "1",
+      "maxVt": 1
     }
   },
   "configs": {

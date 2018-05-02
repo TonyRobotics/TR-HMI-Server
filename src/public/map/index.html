@@ -3,11 +3,11 @@
 
 <head>
   <meta charset="utf-8" />
-
-  <script src="/js/easeljs.js"></script>
-  <script src="/js/eventemitter2.min.js"></script>
-  <script src="/js/roslib.js"></script>
-  <script src="/js/ros2d.js"></script>
+  <link rel="stylesheet" href="./css/main.css" />
+  <script src="./js/easeljs.js"></script>
+  <script src="./js/eventemitter2.min.js"></script>
+  <script src="./js/roslib.js"></script>
+  <script src="./js/ros2d.js"></script>
 
   <script>
     /**
@@ -21,19 +21,16 @@
 
       // If there is an error on the backend, an 'error' emit will be emitted.
       ros.on('error', function (error) {
-
         console.log(error);
       });
 
       // Find out exactly when we made a connection.
       ros.on('connection', function () {
         console.log('Connection made!');
-
       });
 
       ros.on('close', function () {
         console.log('Connection closed.');
-
       });
 
       // Create a connection to the rosbridge WebSocket server.
@@ -115,8 +112,8 @@
 
       // Then we add a callback to be called every time a message is published on this topic.
       odom.subscribe(function (message) {
-        //console.log('Received message on ' + odom.name + ': ');
-        //console.log(message);
+        // console.log('Received message on ' + odom.name + ': ');
+        // console.log(message);
         //console.log(robotPosTmp);
         //polygon.remPoint(robotPosTmp);
         // change the angle
@@ -125,13 +122,15 @@
         var robotPos = new ROSLIB.Vector3({
           x: message.pose.pose.position.x,
           y: message.pose.pose.position.y,
-          z: message.pose.pose.position.z878
+          z: message.pose.pose.position.z
         });
         polygon.pointContainer.removeAllChildren();
         polygon.addPoint(robotPos);
         updateRobotPosition(message.pose.pose.position, message.pose.pose.orientation);
         // If desired, we can unsubscribe from the topic as well.
         //odom.unsubscribe();
+
+        updatePositionData(message.pose.pose.position, message.pose.pose.orientation);
       });
 
       var globalPlan = new ROSLIB.Topic({
@@ -335,7 +334,27 @@
 </head>
 
 <body onload="init()" style="margin:0px;">
+  <div id="dataViewers">
+    <span id="posDataSpan">Position:[]</span>
+    </br>
+    <span id="orieDataSpan">Orientation:[]</span>
+  </div>
   <div id="map"></div>
+
+  <script>
+    var posDataSpan = document.getElementById('posDataSpan');
+    var orieDataSpan = document.getElementById('orieDataSpan');
+
+    /**
+     * 更新界面实时位置数据显示
+     */
+    function updatePositionData(position, orientation) {
+      var posData = `Position:[x:${position.x} y:${position.y} z:${position.z}] `;
+      var orieData = `Orientation:[x:${orientation.x} y:${orientation.y} z:${orientation.z} w:${orientation.w}]`;
+      posDataSpan.innerText = posData;
+      orieDataSpan.innerText = orieData;
+    }
+  </script>
 </body>
 
 </html>

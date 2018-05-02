@@ -18,15 +18,19 @@ function onCmdVel(req, fn) {
 function onLaunchMode(req, fn) {
     if (req.mode) {
         rosControl.toggleRosLaunchMode(req.mode);
-        fn({
-            code: 200,
-            message: 'success'
-        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            });
+        }
     } else {
-        fn({
-            code: 500,
-            message: 'failde: bad request'
-        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failde: bad request'
+            });
+        }
         console.error('/launch_mode: invalid request data:', req);
     }
 }
@@ -39,21 +43,27 @@ function onRosOutCmd(req, fn, client) {
         rosLogger.startLogging((data) => {
             client.emit('/rosout/data', data);
         });
-        fn({
-            code: 200,
-            message: 'success'
-        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            });
+        }
     } else if (req.method == 'stop') {
         rosLogger.stopLogging();
-        fn({
-            code: 200,
-            message: 'success'
-        })
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            })
+        }
     } else {
-        fn({
-            code: 500,
-            message: 'failed: bad request'
-        })
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failed: bad request'
+            })
+        }
     }
 }
 
@@ -63,15 +73,19 @@ function onRosOutCmd(req, fn, client) {
 function onMapInitialAngle(req, fn) {
     if (req.pose && req.angle) {
         rosControl.pubInitialPose(req.pose, req.angle);
-        fn({
-            code: 200,
-            message: 'success'
-        })
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            })
+        }
     } else {
-        fn({
-            code: 500,
-            message: 'failed: pose and angle all required'
-        })
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failed: pose and angle all required'
+            })
+        }
     }
 }
 
@@ -81,15 +95,19 @@ function onMapInitialAngle(req, fn) {
 function onMoveBaseSimpleGoal(req, fn) {
     if (req.pose) {
         rosControl.pubMoveBaseSimpleGoalMsg(req.pose);
-        fn({
-            code: 200,
-            message: 'success'
-        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 200,
+                message: 'success'
+            });
+        }
     } else {
-        fn({
-            code: 500,
-            message: 'failed: pose required'
-        });
+        if (fn && typeof fn == 'function') {
+            fn({
+                code: 500,
+                message: 'failed: pose required'
+            });
+        }
     }
 }
 
