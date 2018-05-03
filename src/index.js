@@ -7,6 +7,7 @@
 const rosControl = require('./roscontrol');
 const restApp = require('./restful');
 const servSocket = require('./socket');
+const debounce = require('lodash.debounce');
 
 //default server port
 const PORT = 3000;
@@ -31,9 +32,9 @@ rosControl.startHMIBridgeNode((rosnode) => {
 });
 
 //subscribe map click to set goal
-rosControl.subscribeMapGoal((msg) => {
+rosControl.subscribeMapGoal(debounce((msg) => {
     io.sockets.emit('/global/map/goal/click', msg);
-});
+}, 600));
 
 //subscribe realtime odometry message
 rosControl.subscribeOdom((msg) => {
