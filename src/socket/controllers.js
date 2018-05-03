@@ -5,11 +5,7 @@ const rosLogger = require('../utils/rosout');
  * 底盘 运动控制
  */
 function onCmdVel(req, fn) {
-    if (req.vx && req.vt) {
-        rosControl.pubCmdVelMsg(req.vx, req.vt);
-    } else {
-        console.error('/cmd_vel: invalid request data:', req);
-    }
+    rosControl.pubCmdVelMsg(req.vx || 0, req.vt || 0);
 }
 
 /**

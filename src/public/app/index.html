@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <title>Download TR HMI Mobile</title>
 </head>
 
 <body>
@@ -18,7 +19,6 @@
             a.click();
             link = a;
         } else if (/android/.test(ua)) {
-            // alert("android");
             let a = document.createElement('a');
             url = `${window.location.pathname}/android/tr-hmi.apk`;
             a.href = url;
