@@ -69,6 +69,7 @@ function onRosOutCmd(req, fn, client) {
 function onMapInitialAngle(req, fn) {
     if (req.pose && req.angle) {
         rosControl.pubInitialPose(req.pose, req.angle);
+        console.log('rosControl-Pub:InitAngle:',req)
         if (fn && typeof fn == 'function') {
             fn({
                 code: 200,
@@ -90,6 +91,7 @@ function onMapInitialAngle(req, fn) {
  */
 function onMoveBaseSimpleGoal(req, fn) {
     if (req.pose) {
+        console.log('rosControl-Pub:moveBase Goal:',req)
         rosControl.pubMoveBaseSimpleGoalMsg(req.pose);
         if (fn && typeof fn == 'function') {
             fn({
