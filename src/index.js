@@ -14,6 +14,9 @@ const PORT = 3000;
 //socket client instance
 let socketClient;
 
+//check and config
+require('./data/config').checkAndConfig();
+
 //bind socket and register routers
 let server = require('http').Server(restApp.callback()),
     io = require('socket.io')(server);

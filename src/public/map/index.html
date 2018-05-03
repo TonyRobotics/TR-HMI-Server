@@ -130,8 +130,6 @@
         updateRobotPosition(message.pose.pose.position, message.pose.pose.orientation);
         // If desired, we can unsubscribe from the topic as well.
         //odom.unsubscribe();
-
-        updatePositionData(message.pose.pose.position, message.pose.pose.orientation);
       });
 
       var globalPlan = new ROSLIB.Topic({
@@ -331,26 +329,7 @@
 </head>
 
 <body onload="init()" style="margin:0px;">
-  <div id="dataViewers">
-    <span id="posDataSpan">Position:[]</span>
-    </br>
-    <span id="orieDataSpan">Orientation:[]</span>
-  </div>
   <div id="map"></div>
-
-  <script>
-    var posDataSpan = document.getElementById('posDataSpan');
-    var orieDataSpan = document.getElementById('orieDataSpan');
-
-    /**
-     * 更新界面实时位置数据显示
-     */
-    function updatePositionData(position, orientation) {
-      posDataSpan.innerText = `Position:[x:${position.x}  y:${position.y}  z:${position.z}] `;
-      orieDataSpan.innerText =
-        `Orientation:[x:${orientation.x}  y:${orientation.y}  z:${orientation.z}  w:${orientation.w}]`;
-    }
-  </script>
 </body>
 
 </html>
