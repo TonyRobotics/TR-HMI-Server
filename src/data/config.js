@@ -18,24 +18,29 @@ let checkAndConfig = () => {
     //check and flag.
     let initialized = db.get('configs.initialized').value();
     if (!initialized) {
-        let _mapsDir = path.join(os.homedir(), 'maps');
-        if (!fs.existsSync(_mapsDir)) {
-            fs.mkdirSync(_mapsDir);
-        }
-        db.defaults({
-            configs: {
-                initialized: true,
-                mapsDir: _mapsDir
-            },
-            settings: {
-                maxSpeed: {
-                    maxVx: 1,
-                    maxVt: 5
-                }
-            },
-            maps: []
-        }).write();
+        forceResetConfigs();
     }
 }
 
+let forceResetConfigs = () => {
+    let _mapsDir = path.join(os.homedir(), 'maps');
+    if (!fs.existsSync(_mapsDir)) {
+        fs.mkdirSync(_mapsDir);
+    }
+    db.defaults({
+        configs: {
+            initialized: true,
+            mapsDir: _mapsDir
+        },
+        settings: {
+            maxSpeed: {
+                maxVx: 1,
+                maxVt: 5
+            }
+        },
+        maps: []
+    }).write();
+}
+
 module.exports.checkAndConfig = checkAndConfig;
+module.exports.forceResetConfigs = forceResetConfigs;
