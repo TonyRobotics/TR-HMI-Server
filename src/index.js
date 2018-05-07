@@ -33,6 +33,7 @@ rosControl.startHMIBridgeNode((rosnode) => {
 
 //subscribe map click to set goal
 rosControl.subscribeMapGoal(debounce((msg) => {
+    console.log('broadcasting click...');
     io.sockets.emit('/global/map/goal/click', msg);
 }, 600));
 
