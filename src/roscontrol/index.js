@@ -14,6 +14,7 @@ const rosnodejs = require('rosnodejs');
 const initialPose = require('./lib/initialPose');
 const cmd_vel = require('./lib/cmd_vel');
 const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
+const runLaunch = require('./lib/runlaunch');
 
 let currentLaunchPid,
     mapServerPid,
@@ -131,4 +132,6 @@ module.exports = {
     'pubInitialPose': pubInitialPose,
     'pubCmdVelMsg': pubCmdVelMsg,
     'pubMoveBaseSimpleGoalMsg': pubMoveGoalMsg,
+    'runRosLaunch': runLaunch.runRosLaunch,
+    'stopRosLaunch': runLaunch.stopRosLaunch
 }

@@ -212,3 +212,36 @@
     "message":"success"
 }
 ```
+
+## 四、ROS 启动相关
+
+### （一）、启动预设的自定义 launch
+
+- route: `/roslaunch/start`
+- method: `GET`
+- query:
+  - `preset`: launch 文件预设，目前仅支持 `tr_hmi` 一项，即 `/roslaunch/start?preset=tr_hmi`
+- response:
+
+```json
+{
+    "message":"success",
+    "data":{
+        "pid":1234 //执行 `roslaunch` 的子进程 pid, 用于后期手动停止此次 launch 进程
+    }
+}
+```
+
+### （二）、停止 launch 进程
+
+- route: `/roslaunch/stop`
+- method: `GET`
+- query:
+  - `pid`: 启动 launch 时返回的 pid
+- response:
+
+```json
+{
+    "message":"success"
+}
+```
