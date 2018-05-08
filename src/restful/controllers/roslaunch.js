@@ -27,15 +27,15 @@ let fn_startROSLaunch = async (ctx, next) => {
                 next();
                 break;
         }
-        let pid = rosCtrl.runRosLaunch('', launchFile, (err, stdout, stderr) => {
-            if (err) {
-                console.log('roslaunch ERR ===> \n', err);
+        let pid = rosCtrl.runRosLaunch('', launchFile, (event, data) => {
+            if (event == 'close') {
+                console.log('roslaunch Closed ===> \n', data);
             }
-            if (stderr) {
-                console.log('roslaunch STDERR ===>\n', stderr);
+            if (event == 'stderr') {
+                console.log('roslaunch STDERR ===>\n', data);
             }
-            if (stdout) {
-                console.log('roslaunch STDERR ===>\n', stdout);
+            if (event == 'stdout') {
+                console.log('roslaunch STDERR ===>\n', data);
             }
         });
         ctx.response.body = {
@@ -64,19 +64,6 @@ let fn_stopROSLaunch = async (ctx, next) => {
                 message: `failed: ${e}`
             };
         }
-        // rosCtrl.stopRosLaunch(pid, (stderr) => {
-        //     if (stderr) {
-        //         ctx.response.body = {
-        //             message: `failed: ${stderr}`
-        //         }
-        //         next();
-        //     } else {
-        //         ctx.response.body = {
-        //             message: 'success'
-        //         };
-        //         next();
-        //     }
-        // });
     }
 }
 

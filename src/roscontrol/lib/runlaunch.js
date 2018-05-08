@@ -17,9 +17,36 @@ const cp = require('child_process');
  * @returns pid , pid of subprocess 
  */
 function runRosLaunch(packageName, fileName, callback, options, args) {
-    console.log('ROSLaunch:', ` ${options} ${packageName} ${fileName} ${args}`);
-    let childProcess = cp.exec(`roslaunch ${options||''} ${packageName||''} ${fileName||''} ${args||''}`, callback);
-    return childProcess.pid;
+    let argsArr = [];
+    if (options) {
+        argsArr.push(options);
+    }
+    if (packageName) {
+        argsArr.push(packageName);
+    }
+    if (fileName) {
+        argsArr.push(fileName);
+    }
+    if (args) {
+        argsArr.push(...args)
+    }
+    let subprocess = cp.spawn('roslaunch', argsArr);
+    subprocess.on('close', (data) => {
+        if (callback) {
+            callback('close', data.toString());
+        }
+    })
+    subprocess.stderr.on('data', (data) => {
+        if (callback) {
+            callback('stderr', data.toString());
+        }
+    })
+    subprocess.stdout.on('data', (data) => {
+        if (callback) {
+            callback('stdout', data.toString());
+        }
+    });
+    return subprocess.pid;
 }
 
 function stopRosLaunch(pid) {
