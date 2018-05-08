@@ -27,15 +27,15 @@ let fn_startROSLaunch = async (ctx, next) => {
                 next();
                 break;
         }
-        let pid = rosCtrl.runRosLaunch('', launchFile, (event, data) => {
+        let pid = rosCtrl.runRosLaunch(null, launchFile, (event, data) => {
             if (event == 'close') {
                 console.log('roslaunch Closed ===> \n', data);
             }
             if (event == 'stderr') {
-                console.log('roslaunch STDERR ===>\n', data);
+                // console.log('roslaunch STDERR ===>\n', data);
             }
             if (event == 'stdout') {
-                console.log('roslaunch STDERR ===>\n', data);
+                // console.log('roslaunch STDERR ===>\n', data);
             }
         });
         ctx.response.body = {
