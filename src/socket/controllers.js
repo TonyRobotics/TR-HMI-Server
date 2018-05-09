@@ -68,6 +68,7 @@ function onRosOutCmd(req, fn, client) {
  * 初始点角度设置
  */
 function onMapInitialAngle(req, fn) {
+    console.log('onMapInitialAngle:',req);
     if (req.pose && req.angle) {
         rosControl.pubInitialPose(req.pose, req.angle);
         console.log('rosControl-Pub:InitAngle:', req)

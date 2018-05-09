@@ -44,6 +44,8 @@ function pubInitialPose(pose, angle, rosNode) {
     //angle => _covariance
     let _covariance = new Float64Array([]);
 
+    pose.pose.orientation.w = 1;
+    
     let poseWithCovariance = new PoseWithCovariance({
         // header: {
         //     seq: 1,
