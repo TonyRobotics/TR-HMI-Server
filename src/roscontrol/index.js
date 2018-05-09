@@ -1,5 +1,5 @@
 /**
- * ros 服务桥接管理
+ * ros 服务桥接管理,提供上层编排管理ros命令的功能；
  * @author Dominic
  */
 
