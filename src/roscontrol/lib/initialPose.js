@@ -41,15 +41,34 @@ function pubInitialPose(pose, angle, rosNode) {
         setUpCommand(rosNode);
     }
 
+    /*
+    
+ { pose:                                                                                                            │
+     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            │
+       pose: { position: [Object], orientation: [Object] } },                                                                           │
+    angle: 244.6875 }       
+    
+    │
+  publishing /initialPose: PoseWithCovarianceStamped {                                                                                  │
+    header: Header { seq: 0, stamp: { secs: 0, nsecs: 0 }, frame_id: '' },                                                              │
+    pose:                                                                                                                               │
+     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            │
+       pose: { position: [Object], orientation: [Object] } } } 
+       
+       │
+  rosControl-Pub:InitAngle: { pose:                                                                                                     │
+     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            │
+       pose: { position: [Object], orientation: [Object] } },                                                                           │
+    angle: 244.6875 } 
+
+    */
+
     //TODO: convert angle to orientation(geometry_msgs/Quaternion.msg)
     //angle => _covariance
     let _covariance = new Float64Array([]);
 
     pose.pose.orientation.w = 1;
 
-    // let _poseWithCovariance = new PoseWithCovariance({
-    // })
-    
     let _poseWithCovarianceStamped = new PoseWithCovarianceStamped({
         // header: {
         //     seq: 1,
@@ -65,7 +84,7 @@ function pubInitialPose(pose, angle, rosNode) {
 
     initialPose.publish(_poseWithCovarianceStamped);
 
-    console.log('publishing /initialPose:', _poseWithCovarianceStamped);
+    console.log('publishing /initialPose:', JSON.stringify(_poseWithCovarianceStamped));
 }
 
 module.exports.pubInitialPose = pubInitialPose;

@@ -101,7 +101,6 @@ function onMapInitialAngle(req, fn) {
     console.log('onMapInitialAngle:', req);
     if (req.pose) {
         rosControl.pubInitialPose(req.pose, req.angle || 0);
-        console.log('rosControl-Pub:InitAngle:', req)
         if (fn && typeof fn == 'function') {
             fn({
                 code: 200,
