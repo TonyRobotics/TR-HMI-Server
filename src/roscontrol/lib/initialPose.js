@@ -90,7 +90,7 @@ pose:
     //TODO: convert angle to orientation(geometry_msgs/Quaternion.msg)
     //angle => _covariance
 
-    let _covariance = new Float64Array();
+    let _covariance = new Float64Array().fill(0);
 
     inPoseStamped.pose.orientation.w = 1;
 
