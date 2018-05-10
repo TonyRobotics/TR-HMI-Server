@@ -5,6 +5,7 @@
 
 'use strict'
 
+//geometry_msgs/PoseWithCovarianceStamped
 const rosnodejs = require('rosnodejs');
 const PoseWithCovarianceStamped = rosnodejs.require('geometry_msgs').msg.PoseWithCovarianceStamped;
 const PoseWithCovariance = rosnodejs.require('geometry_msgs').msg.PoseWithCovariance;
@@ -42,44 +43,40 @@ function pubInitialPose(pose, angle, rosNode) {
     }
 
     /*
-    
- { pose:                                                                                                            │
-     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            │
-       pose: { position: [Object], orientation: [Object] } },                                                                           │
+ { pose:                                                                                                            
+     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            
+       pose: { position: [Object], orientation: [Object] } },                                                                           
     angle: 244.6875 }       
     
-    │
-  publishing /initialPose: PoseWithCovarianceStamped {                                                                                  │
-    header: Header { seq: 0, stamp: { secs: 0, nsecs: 0 }, frame_id: '' },                                                              │
-    pose:                                                                                                                               │
-     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            │
+  publishing /initialPose: PoseWithCovarianceStamped {                                                                                  
+    header: Header { seq: 0, stamp: { secs: 0, nsecs: 0 }, frame_id: '' },                                                             
+    pose:                                                                                                                               
+     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            
        pose: { position: [Object], orientation: [Object] } } } 
        
-       │
-  rosControl-Pub:InitAngle: { pose:                                                                                                     │
-     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            │
-       pose: { position: [Object], orientation: [Object] } },                                                                           │
+  rosControl-Pub:InitAngle: { pose:                                                                                                     
+     { header: { seq: 2, stamp: [Object], frame_id: 'map' },                                                                            
+       pose: { position: [Object], orientation: [Object] } },                                                                           
     angle: 244.6875 } 
-
     */
 
     //TODO: convert angle to orientation(geometry_msgs/Quaternion.msg)
     //angle => _covariance
+    
     let _covariance = new Float64Array([]);
 
     pose.pose.orientation.w = 1;
 
+    let _poseWithCovariance = new PoseWithCovariance({
+        header: pose.header,
+        pose: pose.pose
+    });
+
     let _poseWithCovarianceStamped = new PoseWithCovarianceStamped({
-        // header: {
-        //     seq: 1,
-        //     stamp: {
-        //         secs: 0,
-        //         nsecs: 0
-        //     },
-        //     frame_id: "map"
-        // },
-        'pose': pose
-        // covariance: _covariance
+        header: {
+            frame_id: "map"
+        },
+        pose: _poseWithCovariance
     });
 
     initialPose.publish(_poseWithCovarianceStamped);
