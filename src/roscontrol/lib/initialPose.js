@@ -90,7 +90,11 @@ pose:
     //TODO: convert angle to orientation(geometry_msgs/Quaternion.msg)
     //angle => _covariance
 
+    console.log('>>> inPoseStamped:', JSON.stringify(inPoseStamped));
+
     let _covariance = new Float64Array(36).fill(0.0, 0, 35);
+
+    console.log('>>> _conariance:', JSON.stringify(_covariance));
 
     inPoseStamped.pose.orientation.w = 1;
 
@@ -99,14 +103,18 @@ pose:
         covariance: _covariance
     });
 
+    console.log('>>> _poseWithCovariance:', JSON.stringify(_poseWithCovariance));
+
     let _poseWithCovarianceStamped = new PoseWithCovarianceStamped({
         header: inPoseStamped.header,
         pose: _poseWithCovariance
     });
 
+    console.log('>>> _poseWithCovarianceStamped:', JSON.stringify(_poseWithCovarianceStamped));
+
     initialPose.publish(_poseWithCovarianceStamped);
 
-    console.log('publishing /initialPose:', JSON.stringify(_poseWithCovarianceStamped));
+    console.log('>>> Finish publish!');
 }
 
 module.exports.pubInitialPose = pubInitialPose;
