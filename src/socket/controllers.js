@@ -99,8 +99,8 @@ function onRosOutCmd(req, fn, client) {
  */
 function onMapInitialAngle(req, fn) {
     console.log('onMapInitialAngle:', req);
-    if (req.pose && req.angle) {
-        rosControl.pubInitialPose(req.pose, req.angle);
+    if (req.pose) {
+        rosControl.pubInitialPose(req.pose, req.angle || 0);
         console.log('rosControl-Pub:InitAngle:', req)
         if (fn && typeof fn == 'function') {
             fn({
