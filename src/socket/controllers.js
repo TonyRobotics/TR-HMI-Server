@@ -1,5 +1,16 @@
+/**
+ * Socket Controllers.
+ * 
+ * @author Dominic
+ */
+
+'use strict'
+
 const rosControl = require('../roscontrol');
 const rosLogger = require('../utils/rosout');
+
+//当前运行模式
+let currentLaunchMode = null;
 
 /**
  * 底盘 运动控制
@@ -14,7 +25,11 @@ function onCmdVel(req, fn) {
  */
 function onLaunchMode(req, fn) {
     if (req.mode) {
-        rosControl.toggleRosLaunchMode(req.mode);
+        //过滤重复模式
+        if (!currentLaunchMode || currentLaunchMode != req.mode) {
+            rosControl.toggleRosLaunchMode(req.mode);
+            currentLaunchMode = req.mode;
+        }
         if (fn && typeof fn == 'function') {
             fn({
                 code: 200,
@@ -29,6 +44,21 @@ function onLaunchMode(req, fn) {
             });
         }
         console.error('/launch_mode: invalid request data:', req);
+    }
+}
+
+/**
+ * 取得当前运行模式
+ */
+function getCurrentLaunchMode(req, fn) {
+    if (fn && typeof fn == 'function') {
+        fn({
+            code: 200,
+            message: 'success',
+            data: {
+                mode: currentLaunchMode
+            }
+        })
     }
 }
 
@@ -68,7 +98,7 @@ function onRosOutCmd(req, fn, client) {
  * 初始点角度设置
  */
 function onMapInitialAngle(req, fn) {
-    console.log('onMapInitialAngle:',req);
+    console.log('onMapInitialAngle:', req);
     if (req.pose && req.angle) {
         rosControl.pubInitialPose(req.pose, req.angle);
         console.log('rosControl-Pub:InitAngle:', req)
@@ -117,4 +147,5 @@ module.exports = {
     'onRosOutCmd': onRosOutCmd,
     'onMapInitialAngle': onMapInitialAngle,
     'onMoveBaseSimpleGoal': onMoveBaseSimpleGoal,
+    'getCurrentLaunchMode': getCurrentLaunchMode
 }
