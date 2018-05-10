@@ -6,6 +6,7 @@
 'use strict'
 
 const rosnodejs = require('rosnodejs');
+const PoseWithCovarianceStamped = rosnodejs.require('geometry_msgs').msg.PoseWithCovarianceStamped;
 const PoseWithCovariance = rosnodejs.require('geometry_msgs').msg.PoseWithCovariance;
 
 let initialPose;
@@ -15,7 +16,7 @@ let initialPose;
  * @param rosNode 宿主node(tr_hmi_node)
  */
 function setUpCommand(rosNode) {
-    initialPose = rosNode.advertise('/initialpose', 'geometry_msgs/PoseWithCovariance', {
+    initialPose = rosNode.advertise('/initialpose', 'geometry_msgs/PoseWithCovarianceStamped', {
         queueSize: 1,
         latching: true,
         throttleMs: 0
@@ -45,8 +46,11 @@ function pubInitialPose(pose, angle, rosNode) {
     let _covariance = new Float64Array([]);
 
     pose.pose.orientation.w = 1;
+
+    // let _poseWithCovariance = new PoseWithCovariance({
+    // })
     
-    let poseWithCovariance = new PoseWithCovariance({
+    let _poseWithCovarianceStamped = new PoseWithCovarianceStamped({
         // header: {
         //     seq: 1,
         //     stamp: {
@@ -55,13 +59,13 @@ function pubInitialPose(pose, angle, rosNode) {
         //     },
         //     frame_id: "map"
         // },
-        'pose': pose.pose
+        'pose': pose
         // covariance: _covariance
     });
 
-    initialPose.publish(poseWithCovariance);
+    initialPose.publish(_poseWithCovarianceStamped);
 
-    console.log('publishing /initialPose:', poseWithCovariance);
+    console.log('publishing /initialPose:', _poseWithCovarianceStamped);
 }
 
 module.exports.pubInitialPose = pubInitialPose;
