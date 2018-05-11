@@ -25,11 +25,8 @@ function onCmdVel(req, fn) {
  */
 function onLaunchMode(req, fn) {
     if (req.mode) {
-        //过滤重复模式
-        if (!currentLaunchMode || currentLaunchMode != req.mode) {
-            rosControl.toggleRosLaunchMode(req.mode);
-            currentLaunchMode = req.mode;
-        }
+        rosControl.toggleRosLaunchMode(req.mode);
+        currentLaunchMode = req.mode;
         if (fn && typeof fn == 'function') {
             fn({
                 code: 200,
