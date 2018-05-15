@@ -11,16 +11,16 @@
     <script>
         var ua = navigator.userAgent.toLowerCase();
         let url, link;
-        if (/iphone|ipad|ipod/.test(ua)) {
+        if (/micromessenger/.test(ua)) {
+            let p = document.getElementById('msg');
+            p.innerText = "请点击右上角菜单，选择在浏览器中打开";
+        } else if (/iphone|ipad|ipod/.test(ua)) {
             url = `itms-services://?action=download-manifest&url=${window.location.href}ios/tr-hmi.plist`;
             let a = document.createElement('a');
             a.href = url;
             a.innerText = 'TR-HMI.ipa'
             a.click();
             link = a;
-        } else if (/micromessenger/.test(ua)) {
-            let p = document.getElementById('msg');
-            p.innerText = "请点击右上角菜单，选择在浏览器中打开";
         } else if (/android/.test(ua)) {
             let a = document.createElement('a');
             url = `${window.location.href}android/tr-hmi.apk`;
