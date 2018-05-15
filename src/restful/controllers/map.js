@@ -31,9 +31,16 @@ let fn_loadMap = async (ctx, next) => {
             alias: mapName
         }).value();
         if (map && map.fileName) {
-            rosCtrl.reloadMap(path.join(mapDir, map.fileName));
-            ctx.response.body = {
-                message: 'success'
+            let mapPath = path.join(mapDir, map.fileName);
+            if (fs.existsSync(mapPath)) {
+                rosCtrl.reloadMap(mapPath);
+                ctx.response.body = {
+                    message: 'success'
+                }
+            } else {
+                ctx.response.body = {
+                    message: 'failed: cannot find the map file:' + mapPath
+                }
             }
         } else {
             ctx.response.body = {
