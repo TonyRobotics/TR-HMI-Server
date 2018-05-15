@@ -12,7 +12,7 @@
         var ua = navigator.userAgent.toLowerCase();
         let url, link;
         if (/iphone|ipad|ipod/.test(ua)) {
-            url = `itms-services://?action=download-manifest&url=http://${window.location.pathname}/ios/tr-hmi.plist`;
+            url = `itms-services://?action=download-manifest&url=${window.location.href}ios/tr-hmi.plist`;
             let a = document.createElement('a');
             a.href = url;
             a.innerText = 'TR-HMI.ipa'
@@ -20,14 +20,13 @@
             link = a;
         } else if (/android/.test(ua)) {
             let a = document.createElement('a');
-            url = `${window.location.pathname}/android/tr-hmi.apk`;
+            url = `${window.location.href}android/tr-hmi.apk`;
             a.href = url;
             a.innerText = 'TR-HMI.apk'
             a.download = 'tr-hmi.apk';
             a.click();
             link = a;
         } else {
-            // window.location.href = `${window.location.pathname}/android/tr-hmi.apk`;
             alert('请使用手机访问！');
         }
         if (link) {
