@@ -36,8 +36,8 @@
 
       // Create a connection to the rosbridge WebSocket server.
       // ros.connect('ws://192.168.2.91:9090');
-      // ros.connect('ws://192.168.5.108:9090');
-      ros.connect(`ws://${window.location.hostname}:9090`);
+      ros.connect('ws://192.168.5.108:9090');
+      // ros.connect(`ws://${window.location.hostname}:9090`);
 
       // Publishing a Topic
       // ------------------
@@ -219,6 +219,8 @@
       } else {
         stage = viewer.scene.getStage();
       }
+      //enable stage Touch
+      createjs.Touch.enable(stage, false, true);
 
       var updateRobotPosition = function (pose, orientation) {
         // update the robots position on the map
