@@ -127,10 +127,10 @@ function eularAngleToQuaternion(pitch, roll, yaw) {
     // Abbreviations for the various angular functions
     let cy = Math.cos(yaw * 0.5);
     let sy = Math.sin(yaw * 0.5);
-    double cr = Math.cos(roll * 0.5);
-    double sr = Math.sin(roll * 0.5);
-    double cp = Math.cos(pitch * 0.5);
-    double sp = Math.sin(pitch * 0.5);
+    let cr = Math.cos(roll * 0.5);
+    let sr = Math.sin(roll * 0.5);
+    let cp = Math.cos(pitch * 0.5);
+    let sp = Math.sin(pitch * 0.5);
 
     q.w = cy * cr * cp + sy * sr * sp;
     q.x = cy * sr * cp - sy * cr * sp;
