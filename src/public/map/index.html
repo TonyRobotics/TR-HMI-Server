@@ -36,32 +36,33 @@
 
       // Create a connection to the rosbridge WebSocket server.
       // ros.connect('ws://192.168.2.91:9090');
+      // ros.connect('ws://192.168.5.108:9090');
       ros.connect(`ws://${window.location.hostname}:9090`);
 
       // Publishing a Topic
       // ------------------
 
       // First, we create a Topic object with details of the topic's name and message type.
-      var cmdVel = new ROSLIB.Topic({
-        ros: ros,
-        name: '/cmd_vel',
-        messageType: 'geometry_msgs/Twist'
-      });
+      // var cmdVel = new ROSLIB.Topic({
+      //   ros: ros,
+      //   name: '/cmd_vel',
+      //   messageType: 'geometry_msgs/Twist'
+      // });
 
       // Then we create the payload to be published. The object we pass in to ros.Message matches the
       // fields defined in the geometry_msgs/Twist.msg definition.
-      var twist = new ROSLIB.Message({
-        linear: {
-          x: 0.1,
-          y: 0.2,
-          z: 0.3
-        },
-        angular: {
-          x: -0.1,
-          y: -0.2,
-          z: -0.3
-        }
-      });
+      // var twist = new ROSLIB.Message({
+      //   linear: {
+      //     x: 0.1,
+      //     y: 0.2,
+      //     z: 0.3
+      //   },
+      //   angular: {
+      //     x: -0.1,
+      //     y: -0.2,
+      //     z: -0.3
+      //   }
+      // });
 
       // And finally, publish.
       // cmdVel.publish(twist);
@@ -154,16 +155,13 @@
         x: 0.0,
         y: 0.0,
         z: 0.0,
-        w: 0.0
+        w: 1.0
       });
 
       var p = new ROSLIB.Pose({
         position: v1,
         orientation: q1
       });
-      //console.log(p);
-
-
 
       // Then we add a callback to be called every time a message is published on this topic.
       globalPlan.subscribe(function (message) {
@@ -242,9 +240,6 @@
       var selectedPointIndex = null;
 
       var pointCallBack = function (type, event, index) {
-        //console.log(type);
-        //console.log(event);
-        //console.log(index);
         if (type === 'mousedown') {
           if (event.nativeEvent.shiftKey === true) {
             polygon.remPoint(index);

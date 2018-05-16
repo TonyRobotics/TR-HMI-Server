@@ -9,6 +9,7 @@
 const rosnodejs = require('rosnodejs');
 const PoseWithCovarianceStamped = rosnodejs.require('geometry_msgs').msg.PoseWithCovarianceStamped;
 const PoseWithCovariance = rosnodejs.require('geometry_msgs').msg.PoseWithCovariance;
+const Quaternion = rosnodejs.require('geometry_msgs').msg.Quaternion;
 
 let initialPose;
 
@@ -96,7 +97,7 @@ pose:
 
     console.log('>>> _conariance:', JSON.stringify(_covariance));
 
-    inPoseStamped.pose.orientation.w = 1;
+    inPoseStamped.pose.orientation = eularAngleToQuaternion(0, 0, angle / 180 * Math.PI);
 
     let _poseWithCovariance = new PoseWithCovariance({
         pose: inPoseStamped.pose,
@@ -115,6 +116,28 @@ pose:
     initialPose.publish(_poseWithCovarianceStamped);
 
     console.log('>>> Finish publish!');
+}
+
+/**
+ * 欧拉角转换四元数
+ */
+function eularAngleToQuaternion(pitch, roll, yaw) {
+    let q = new Quaternion();
+
+    // Abbreviations for the various angular functions
+    let cy = Math.cos(yaw * 0.5);
+    let sy = Math.sin(yaw * 0.5);
+    double cr = Math.cos(roll * 0.5);
+    double sr = Math.sin(roll * 0.5);
+    double cp = Math.cos(pitch * 0.5);
+    double sp = Math.sin(pitch * 0.5);
+
+    q.w = cy * cr * cp + sy * sr * sp;
+    q.x = cy * sr * cp - sy * cr * sp;
+    q.y = cy * cr * sp + sy * sr * cp;
+    q.z = sy * cr * cp - cy * sr * sp;
+
+    return q;
 }
 
 module.exports.pubInitialPose = pubInitialPose;
