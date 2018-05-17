@@ -71,7 +71,7 @@ function reloadMap(fullName, callback) {
         killSpawn(mapServerPid);
         mapServerPid = null;
     }
-    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}.yaml`], callback);
+    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}`], callback);
 }
 
 /**

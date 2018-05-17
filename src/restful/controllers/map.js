@@ -31,7 +31,7 @@ let fn_loadMap = async (ctx, next) => {
             alias: mapName
         }).value();
         if (map && map.fileName) {
-            let mapPath = path.join(mapDir, map.fileName);
+            let mapPath = path.join(mapDir, map.fileName + '.yaml');
             if (fs.existsSync(mapPath)) {
                 rosCtrl.reloadMap(mapPath);
                 ctx.response.body = {
