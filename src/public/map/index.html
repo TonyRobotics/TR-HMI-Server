@@ -3,11 +3,13 @@
 
 <head>
   <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=0" name="viewport" />
   <link rel="stylesheet" href="./css/main.css" />
   <script src="./js/easeljs.js"></script>
   <script src="./js/eventemitter2.min.js"></script>
   <script src="./js/roslib.js"></script>
   <script src="./js/ros2d.js"></script>
+  <script src="./js/transformable.js"></script>
 
   <script>
     var viewer;
@@ -98,8 +100,6 @@
         lineSize: 0.001,
         pointSize: 0.1
       });
-
-
 
       //Subscribing to a Topic
       //----------------------
@@ -194,6 +194,10 @@
         // Use this property in case of continuous updates			
         continuous: true
       });
+
+      createjs.Touch.enable(viewer.scene);
+      // createjs.Touch.disable(state); 
+
       // Scale the canvas to fit to the map
       gridClient.on('change', function () {
         viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
@@ -212,16 +216,8 @@
       // wait for a pose to come in first
       robotMarker.visible = false;
       viewer.scene.addChild(robotMarker);
-      var initScaleSet = false;
-      var stage;
-      if (viewer.scene instanceof createjs.Stage) {
-        stage = viewer.scene;
-      } else {
-        stage = viewer.scene.getStage();
-      }
-      //enable stage Touch
-      createjs.Touch.enable(stage, false, true);
 
+      var initScaleSet = false;
       var updateRobotPosition = function (pose, orientation) {
         // update the robots position on the map
         robotMarker.x = pose.x;
@@ -232,7 +228,7 @@
           initScaleSet = true;
         }
         // change the angle
-        robotMarker.rotation = stage.rosQuaternionToGlobalTheta(orientation);
+        robotMarker.rotation = viewer.scene.rosQuaternionToGlobalTheta(orientation);
         // Set visible
         robotMarker.visible = true;
       };
@@ -261,66 +257,65 @@
         clickedPolygon = true;
       }
 
-
       // Add the polygon to the viewer
       viewer.scene.addChild(polygon);
       viewer.scene.addChild(polygonPlan);
       viewer.scene.addChild(polygonGoal);
 
-      // Event listeners for mouse interaction with the stage
-      viewer.scene.mouseMoveOutside = false; // doesn't seem to work
+      //实现舞台多指触控变换
 
-      viewer.scene.addEventListener('stagemousemove', function (event) {
-        // Move point when it's dragged
-        if (selectedPointIndex !== null) {
-          var pos = viewer.scene.globalToRos(event.stageX, event.stageY);
-          polygon.movePoint(selectedPointIndex, pos);
-        }
+      let zoomView = new ROS2D.ZoomView({
+        rootObject: viewer.scene
+      });
+
+      var transformable = new Transformable(viewer.scene);
+      let didTransformed = false;
+
+      transformable.on('scale', (data) => {
+        didTransformed = true;
+        zoomView.startZoom(data.start.x, data.start.y);
+        zoomView.zoom(viewer.scene.scaleX / zoomView.startScale.x * data.scale);
+      });
+
+      transformable.on('move', (diff) => {
+        didTransformed = true;
+        viewer.scene.x += (diff.x);
+        viewer.scene.y += (diff.y);
       });
 
       var goalPosTmp = null;
-      viewer.scene.addEventListener('stagemouseup', function (event) {
-        // Add point when not clicked on the polygon
-        if (selectedPointIndex !== null) {
-          selectedPointIndex = null;
-        } else if (viewer.scene.mouseInBounds === true && clickedPolygon === false) {
-          if (goalPosTmp != null) {
-            polygonGoal.remPoint(goalPosTmp);
-          }
 
-          goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
-          console.log(goalPosTmp);
-          console.log(p);
-          polygonGoal.addPoint(goalPosTmp);
-          p.position.x = goalPosTmp.x;
-          p.position.y = goalPosTmp.y;
-          var poseStamped = {
-            header: {
-              //   seq: 1,
-              //   stamp: {
-              //     secs: 0,
-              //     nsecs: 0
-              //   },
-              frame_id: "map"
-            },
-            pose: p
-          };
-          goal.publish(poseStamped);
+      transformable.on('complete', (event) => {
+        if (!didTransformed) {
+          // Add point when not clicked on the polygon
+          if (selectedPointIndex !== null) {
+            selectedPointIndex = null;
+          } else if (viewer.scene.mouseInBounds === true && clickedPolygon === false) {
+            if (goalPosTmp != null) {
+              polygonGoal.remPoint(goalPosTmp);
+            }
+            goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
+            polygonGoal.addPoint(goalPosTmp);
+            p.position.x = goalPosTmp.x;
+            p.position.y = goalPosTmp.y;
+            var poseStamped = {
+              header: {
+                //   seq: 1,
+                //   stamp: {
+                //     secs: 0,
+                //     nsecs: 0
+                //   },
+                frame_id: "map"
+              },
+              pose: p
+            };
+            goal.publish(poseStamped);
+          }
+          console.log('PoseStamped: ', poseStamped);
+          clickedPolygon = false;
         }
-        clickedPolygon = false;
+        didTransformed = false;
       });
-    }
-    //打开对话框
-    function openDialog(pose) {
-      var pStr = JSON.stringify(pose);
-      //alert(pose);
-      //alert(pStr);
-    }
-    //设置目标点角度
-    function setOrientation(angel) {
-      //角度转四元数
-      //alert(angel);
-      //window.postMessage('只能传递一个字符串类型的参数');
     }
   </script>
 </head>
