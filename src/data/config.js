@@ -27,6 +27,7 @@ let checkAndConfig = () => {
 
 let forceResetConfigs = () => {
     console.log('[-] 开始应用默认配置……')
+    
     let _mapsDir = path.join(os.homedir(), 'maps');
     if (!fs.existsSync(_mapsDir)) {
         fs.mkdirSync(_mapsDir);

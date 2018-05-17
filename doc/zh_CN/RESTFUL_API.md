@@ -106,7 +106,7 @@
             "total": "50G", // 硬盘总量 GB
             "free": "39G", // 可用
             "used": "8.2G", //已用
-            "freeDiskPercentage": "83%" //剩余空间占比
+            "usedDiskPercentage": "83%" //已用空间占比
         },
         "system": {
             "uptime": 326, //开机时间 （分钟）
