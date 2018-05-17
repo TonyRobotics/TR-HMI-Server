@@ -265,16 +265,17 @@
       //实现舞台多指触控变换
 
       let zoomView = new ROS2D.ZoomView({
-        rootObject: viewer.scene
+        rootObject: viewer.scene,
+        minScale: 20
       });
 
       var transformable = new Transformable(viewer.scene);
       let didTransformed = false;
 
       let logger = document.getElementById('logger');
-      transformable.on('update', (data) => {
-        logger.innerText = 'Update : ' + data.active;
-      });
+      // transformable.on('update', (data) => {
+      // logger.innerText = 'Update : ' + data.active;
+      // });
 
       transformable.on('scale', (data) => {
         didTransformed = true;
@@ -291,6 +292,8 @@
       var goalPosTmp = null;
 
       transformable.on('complete', (event) => {
+        logger.innerText = 'complete : ' + event.active;
+
         if (!didTransformed) {
           // Add point when not clicked on the polygon
           if (selectedPointIndex !== null) {
@@ -327,7 +330,7 @@
 
 <body onload="init()" style="margin:0px;">
   <div id="dataViewers">
-    <span id="logger">Testing……</span>
+    <span id="logger" style="display: none">Testing……</span>
   </div>
   <div id="map"></div>
 </body>

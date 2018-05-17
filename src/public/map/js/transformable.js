@@ -21,7 +21,7 @@ var Transformable = (function () {
 
             stage.addEventListener('stagemousedown', _mousedown);
             stage.addEventListener('stagemousemove', _pressmove);
-            stage.addEventListener('pressup', _pressup);
+            stage.addEventListener('stagemouseup', _pressup);
             stage.addEventListener('tick', _enterFrame);
         };
 
@@ -94,6 +94,8 @@ var Transformable = (function () {
             }
 
             _calculateActiveFingers();
+
+            event.active = self._activeFingers; 
 
             self.dispatchEvent('complete', event);
         };
