@@ -70,7 +70,6 @@ var Transformable = (function () {
             if (_changed) {
                 _changed = false;
                 self.dispatchEvent('update', {
-                    fingers: self._fingers,
                     active: self._activeFingers
                 });
 

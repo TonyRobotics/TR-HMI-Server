@@ -10,6 +10,10 @@ body {
     bottom: 16px;
 }
 
+#dataViewers span {
+    color: aqua;
+}
+
 #map canvas {
     width: 100%;
 }

@@ -271,6 +271,11 @@
       var transformable = new Transformable(viewer.scene);
       let didTransformed = false;
 
+      let logger = document.getElementById('logger');
+      transformable.on('update', (data) => {
+        logger.innerText = 'Update : ' + data.active;
+      });
+
       transformable.on('scale', (data) => {
         didTransformed = true;
         zoomView.startZoom(data.start.x, data.start.y);
@@ -321,6 +326,9 @@
 </head>
 
 <body onload="init()" style="margin:0px;">
+  <div id="dataViewers">
+    <span id="logger">Testing……</span>
+  </div>
   <div id="map"></div>
 </body>
 
