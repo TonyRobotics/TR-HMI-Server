@@ -66,7 +66,7 @@ exports.harddrive = () => new Promise((resolve, reject) => {
             total: disk_info[1],
             free: disk_info[2],
             used: disk_info[3],
-            freeDiskPercentage: disk_info[4]
+            usedDiskPercentage: disk_info[4]
         });
     });
 });

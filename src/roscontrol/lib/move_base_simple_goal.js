@@ -36,6 +36,13 @@ function pubGoalMsg(poseStamped, rosNode) {
         setUpCommand(rosNode);
     }
 
+    //handle pose data
+    try {
+        poseStamped.pose.orientation.w = 1;
+    } catch (e) {
+        console.error(e);
+    }
+
     goalMsg.publish(poseStamped);
 
     console.log('publishing /move_base_simple/goal :', poseStamped);

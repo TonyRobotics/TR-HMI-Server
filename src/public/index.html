@@ -1,12 +1,13 @@
 <html>
 
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <title>Test Page</title>
     <script src="js/socket.io.js"></script>
 </head>
 
 <body>
-    <button id="getSpeed">getSpeed</button>
     <div style="display: block">
         <input id="socketTopic" />
         </br>
@@ -16,7 +17,7 @@
     </div>
 
     <script>
-        let socket = io('http://localhost:3000');
+        let socket = io();
 
         socket.on('connect', () => {
             console.log('client connected');
@@ -29,18 +30,8 @@
         });
 
         socket.on('/global/map/goal/click', (data) => {
-            console.log('map click:',data);
+            console.log('map click:', data);
         });
-
-        document.getElementById('getSpeed').onclick = function () {
-            socket.emit('/settings/speed', {
-                method: 'get',
-                params: []
-            }, (data) => {
-                console.log('/settings/speed ==>:', data);
-                alert(JSON.stringify(data));
-            });
-        }
 
         document.getElementById('sendRaw').onclick = function () {
             let topic = document.getElementById('socketTopic').value;

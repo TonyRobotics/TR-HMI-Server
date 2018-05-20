@@ -24,10 +24,10 @@ function simpleSpawn(command, args, callback) {
     }
     let sp = spawn(command, args || '');
     sp.stdout.on('data', (data) => {
-        console.log(`stdout:${command} ${args}\n${data}`);
+        console.log(`stdout from: ${command} ${args}\n --DATA: ${data}`);
     });
     sp.stderr.on('data', (data) => {
-        console.log(`stderr:${command} ${args}\n${data}`);
+        console.log(`stderr from: ${command} ${args}\n --DATA: ${data}`);
         
         if (data && callback) {
             callback(data);
@@ -35,11 +35,11 @@ function simpleSpawn(command, args, callback) {
     });
 
     sp.on('close', (code, signal) => {
-        console.log(`sp end:${command} ${args}\n ${code || ''} ${signal}`);
+        console.log(`sp end from: ${command} ${args}\n --CODE:${code || ''} SIGNAL:${signal}`);
     });
 
     sp.on('error', (err) => {
-        console.log(`sp error:${command} ${args}\n ${err}`);
+        console.log(`sp error from: ${command} ${args}\n --ERROR:${err}`);
     })
 
     allProcesses.push({

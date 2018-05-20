@@ -53,8 +53,6 @@ function pubCmdVelMsg(vx, vt, rosNode) {
     });
 
     cmd_vel.publish(msgTwist);
-
-    console.log('publishing twist:', msgTwist);
 }
 
 module.exports.pubCmdVelMsg = pubCmdVelMsg;

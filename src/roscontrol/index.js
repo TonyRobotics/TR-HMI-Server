@@ -1,5 +1,5 @@
 /**
- * ros 服务桥接管理
+ * ros 服务桥接管理,提供上层编排管理ros命令的功能；
  * @author Dominic
  */
 
@@ -14,6 +14,7 @@ const rosnodejs = require('rosnodejs');
 const initialPose = require('./lib/initialPose');
 const cmd_vel = require('./lib/cmd_vel');
 const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
+const runLaunch = require('./lib/runlaunch');
 
 let currentLaunchPid,
     mapServerPid,
@@ -70,7 +71,7 @@ function reloadMap(fullName, callback) {
         killSpawn(mapServerPid);
         mapServerPid = null;
     }
-    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}.yaml`], callback);
+    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}`], callback);
 }
 
 /**
@@ -131,4 +132,6 @@ module.exports = {
     'pubInitialPose': pubInitialPose,
     'pubCmdVelMsg': pubCmdVelMsg,
     'pubMoveBaseSimpleGoalMsg': pubMoveGoalMsg,
+    'runRosLaunch': runLaunch.runRosLaunch,
+    'stopRosLaunch': runLaunch.stopRosLaunch
 }

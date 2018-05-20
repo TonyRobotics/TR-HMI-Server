@@ -30,6 +30,8 @@ function registerRouters(io, callback) {
 
         client.on('/move_base_simple/goal', controllers.onMoveBaseSimpleGoal);
 
+        client.on('/get_current_launch_mode', controllers.getCurrentLaunchMode);
+
         if (callback) {
             callback(client);
         }
