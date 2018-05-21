@@ -46,12 +46,11 @@ function pubAngleSettingMsg(data, rosNode) {
         });
 
         goalImgMsg.publish(poseStamped);
+
+        console.log('publishing /tr_hmi/goalImg :', poseStamped);
     } else {
         console.error('/tr_hmi/goalImg: invalid data:', data);
     }
-
-
-    console.log('publishing /tr_hmi/goalImg :', poseStamped);
 }
 
 module.exports.pubAngleSettingMsg = pubAngleSettingMsg;
