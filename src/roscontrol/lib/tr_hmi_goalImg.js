@@ -54,4 +54,4 @@ function pubAngleSettingMsg(data, rosNode) {
     console.log('publishing /tr_hmi/goalImg :', poseStamped);
 }
 
-module.exports.pubGoalMsg = pubGoalMsg;
+module.exports.pubAngleSettingMsg = pubAngleSettingMsg;

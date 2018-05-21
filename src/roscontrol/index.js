@@ -15,6 +15,7 @@ const initialPose = require('./lib/initialPose');
 const cmd_vel = require('./lib/cmd_vel');
 const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
 const runLaunch = require('./lib/runlaunch');
+const tr_hmi_goalImg = require('./lib/tr_hmi_goalImg');
 
 let currentLaunchPid,
     mapServerPid,
@@ -133,5 +134,6 @@ module.exports = {
     'pubCmdVelMsg': pubCmdVelMsg,
     'pubMoveBaseSimpleGoalMsg': pubMoveGoalMsg,
     'runRosLaunch': runLaunch.runRosLaunch,
-    'stopRosLaunch': runLaunch.stopRosLaunch
+    'stopRosLaunch': runLaunch.stopRosLaunch,
+    'pubAngleSettingMsg': tr_hmi_goalImg.pubAngleSettingMsg,
 }
