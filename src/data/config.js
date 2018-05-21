@@ -27,7 +27,7 @@ let checkAndConfig = () => {
 
 let forceResetConfigs = () => {
     console.log('[-] 开始应用默认配置……')
-    
+
     let _mapsDir = path.join(os.homedir(), 'maps');
     if (!fs.existsSync(_mapsDir)) {
         fs.mkdirSync(_mapsDir);
@@ -55,7 +55,10 @@ let forceResetConfigs = () => {
  * 配置默认地图
  */
 let prepareDefaultMap = () => {
-    if (fs.existsSync(path.join(__dirname, 'default.pgm'))) {
+    let maps = db.get('maps').value();
+    if (maps && maps.length > 0) {
+        console.log('[√] 检测到地图存在，跳过默认配置！');
+    } else if (fs.existsSync(path.join(__dirname, 'default.pgm'))) {
         console.log('[-] 开始配置默认地图……');
 
         let destDir = path.join(os.homedir(), 'maps');
