@@ -39,17 +39,10 @@ function pubAngleSettingMsg(data, rosNode) {
 
     //handle pose data
     if (data && data.originalPose && data.angle) {
+        data.originalPose.pose.orientation = rosMath.eularAngleToQuaternion(0, 0, data.angle / 180 * Math.PI);
+        goalImgMsg.publish(data.originalPose);
 
-        let poseStamped = new PoseStamped({
-            pose: {
-                pose: data.originalPose.pose,
-                orientation: rosMath.eularAngleToQuaternion(0, 0, data.angle / 180 * Math.PI)
-            }
-        });
-
-        goalImgMsg.publish(poseStamped);
-
-        console.log('publishing /tr_hmi/goalImg :', poseStamped);
+        console.log('publishing /tr_hmi/goalImg :', data.originalPose);
     } else {
         console.error('/tr_hmi/goalImg: invalid data:', data);
     }
