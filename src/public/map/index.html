@@ -145,6 +145,12 @@
         messageType: 'geometry_msgs/PoseStamped'
       });
 
+      var goalImg = new ROSLIB.Topic({
+        ros: ros,
+        name: '/tr_hmi/goalImg',
+        messageType: 'geometry_msgs/PoseStamped'
+      });
+
       var v1 = new ROSLIB.Vector3({
         x: 0,
         y: 0,
@@ -180,6 +186,11 @@
         //odom.unsubscribe();
       });
 
+      goalImg.subscribe(function (message) {
+        console.log();
+        updateRobotGoalPosition(message.pose.pose.position, message.pose.pose.orientation);
+      });
+
       // Create the main viewer.
       viewer = new ROS2D.Viewer({
         divID: 'map',
@@ -212,10 +223,20 @@
         image: use_image,
         pulse: true
       });
-
       // wait for a pose to come in first
       robotMarker.visible = false;
       viewer.scene.addChild(robotMarker);
+
+      // marker for the goal
+      var goalMarker = null;
+      var goal_image = "img/arrow_64.png";
+      goalMarker = new ROS2D.NavigationImage({
+        size: 0.1,
+        image: use_image,
+        pulse: true
+      });
+      goalMarker.visible = false;
+      viewer.scene.addChild(goalMarker);
 
       var initScaleSet = false;
       var updateRobotPosition = function (pose, orientation) {
@@ -232,6 +253,23 @@
         // Set visible
         robotMarker.visible = true;
       };
+
+      var updateRobotGoalPosition = function (pose, orientation) {
+        // update the robots position on the map
+        goalMarker.x = pose.x;
+        goalMarker.y = -pose.y;
+        if (!initScaleSet) {
+          goalMarker.scaleX = 0.01;
+          goalMarker.scaleY = 0.01;
+          initScaleSet = true;
+        }
+        // change the angle
+        goalMarker.rotation = viewer.scene.rosQuaternionToGlobalTheta(orientation);
+        // Set visible
+        goalMarker.visible = true;
+      };
+
+
 
       // Callback functions when there is mouse interaction with the polygon
       var clickedPolygon = false;
@@ -260,7 +298,7 @@
       // Add the polygon to the viewer
       viewer.scene.addChild(polygon);
       viewer.scene.addChild(polygonPlan);
-      viewer.scene.addChild(polygonGoal);
+      //viewer.scene.addChild(polygonGoal);
 
       //实现舞台多指触控变换
 
@@ -303,7 +341,16 @@
               polygonGoal.remPoint(goalPosTmp);
             }
             goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
-            polygonGoal.addPoint(goalPosTmp);
+            //polygonGoal.addPoint(goalPosTmp);
+            
+            var goalQuaTmp = new ROSLIB.Quaternion({
+              x: 0.0,
+              y: 0.0,
+              z: 0.0,
+              w: 1.0
+            });
+            updateRobotGoalPosition(goalPosTmp, goalQuaTmp);
+
             p.position.x = goalPosTmp.x;
             p.position.y = goalPosTmp.y;
             var poseStamped = {
