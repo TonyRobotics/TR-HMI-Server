@@ -32,6 +32,8 @@ function registerRouters(io, callback) {
 
         client.on('/get_current_launch_mode', controllers.getCurrentLaunchMode);
 
+        client.on('/global/map/goal/angle_setting', controllers.onSettingAngle);
+
         if (callback) {
             callback(client);
         }
