@@ -42,7 +42,7 @@ function pubAngleSettingMsg(data, rosNode) {
 
         let poseStamped = new PoseStamped({
             pose: data.originalPose.pose,
-            orientation: rosMath.eularAngleToQuaternion(0, 0, data.angle / 180 * Math.PI);
+            orientation: rosMath.eularAngleToQuaternion(0, 0, data.angle / 180 * Math.PI)
         });
 
         goalImgMsg.publish(poseStamped);
