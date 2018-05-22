@@ -16,6 +16,8 @@ var Transformable = (function () {
 
         var _changed = false;
 
+        var _didTransformed = false;
+
         var Init = function () {
             self._initialized = true;
 
@@ -49,6 +51,8 @@ var Transformable = (function () {
             self.dispatchEvent('start', {
                 active: self._activeFingers
             });
+
+            _didTransformed = false;
         };
 
         // update touchpoint-positions
@@ -64,6 +68,7 @@ var Transformable = (function () {
             _calculateActiveFingers();
 
             _changed = true;
+            _didTransformed = true;
         };
 
         // if positions changed (through pressmove): dispatch update-event for later usage and keep track of old point-position
@@ -98,6 +103,11 @@ var Transformable = (function () {
             _calculateActiveFingers();
 
             event.active = self._activeFingers;
+
+            if (self._activeFingers == 0 && !_didTransformed) {
+                self.dispatchEvent('click', event);
+            }
+            _didTransformed = false;
 
             self.dispatchEvent('complete', event);
         };
@@ -137,6 +147,8 @@ var Transformable = (function () {
                     start: points[0].current,
                     scale: scale
                 });
+
+                _didTransformed = true;
             }
         }
 
@@ -163,6 +175,8 @@ var Transformable = (function () {
                     x: point.current.x - point.old.x,
                     y: point.current.y - point.old.y
                 })
+
+                _didTransformed = true;
             }
         }
 

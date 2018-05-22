@@ -302,14 +302,12 @@
       //viewer.scene.addChild(polygonGoal);
 
       //实现舞台多指触控变换
-
       let zoomView = new ROS2D.ZoomView({
         rootObject: viewer.scene,
         minScale: 20
       });
 
       var transformable = new Transformable(viewer.scene);
-      let didTransformed = false;
 
       let logger = document.getElementById('logger');
       // transformable.on('update', (data) => {
@@ -317,27 +315,21 @@
       // });
 
       transformable.on('scale', (data) => {
-        didTransformed = true;
         zoomView.startZoom(data.start.x, data.start.y);
         zoomView.zoom(viewer.scene.scaleX / zoomView.startScale.x * data.scale);
       });
 
       transformable.on('move', (diff) => {
-        didTransformed = true;
         viewer.scene.x += (diff.x);
         viewer.scene.y += (diff.y);
       });
 
+      // transformable.on('complete', (event) => {
+      //   logger.innerText = 'complete : ' + event.active;
+      // });
+
       var goalPosTmp = null;
-
-      transformable.on('complete', (event) => {
-        logger.innerText = 'complete : ' + event.active;
-
-        if (!didTransformed) {}
-        didTransformed = false;
-      });
-
-      viewer.scene.addEventListener('click', (e) => {
+      transformable.on('click', (e) => {
         // Add point when not clicked on the polygon
         if (selectedPointIndex !== null) {
           selectedPointIndex = null;
