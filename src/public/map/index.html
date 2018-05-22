@@ -187,7 +187,7 @@
       });
 
       goalImg.subscribe(function (message) {
-        console.log('----goalImg: ', message);
+        // console.log('----goalImg: ', message);
         updateRobotGoalPosition(message.pose.position, message.pose.orientation);
       });
 
@@ -229,7 +229,7 @@
 
       // marker for the goal
       var goalMarker = null;
-      var goal_image = "img/arrow_64.png";
+      var goal_image = "img/arrow_green.png";
       goalMarker = new ROS2D.NavigationImage({
         size: 0.1,
         image: use_image,
