@@ -333,44 +333,46 @@
       transformable.on('complete', (event) => {
         logger.innerText = 'complete : ' + event.active;
 
-        if (!didTransformed) {
-          // Add point when not clicked on the polygon
-          if (selectedPointIndex !== null) {
-            selectedPointIndex = null;
-          } else if (viewer.scene.mouseInBounds === true && clickedPolygon === false) {
-            // if (goalPosTmp != null) {
-            //   polygonGoal.remPoint(goalPosTmp);
-            // }
-            goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
-            //polygonGoal.addPoint(goalPosTmp);
-
-            var goalQuaTmp = new ROSLIB.Quaternion({
-              x: 0.0,
-              y: 0.0,
-              z: 0.0,
-              w: 1.0
-            });
-            updateRobotGoalPosition(goalPosTmp, goalQuaTmp);
-
-            p.position.x = goalPosTmp.x;
-            p.position.y = goalPosTmp.y;
-            var poseStamped = {
-              header: {
-                //   seq: 1,
-                //   stamp: {
-                //     secs: 0,
-                //     nsecs: 0
-                //   },
-                frame_id: "map"
-              },
-              pose: p
-            };
-            goal.publish(poseStamped);
-          }
-          console.log('PoseStamped: ', poseStamped);
-          clickedPolygon = false;
-        }
+        if (!didTransformed) {}
         didTransformed = false;
+      });
+
+      viewer.scene.addEventListener('click', (e) => {
+        // Add point when not clicked on the polygon
+        if (selectedPointIndex !== null) {
+          selectedPointIndex = null;
+        } else if (viewer.scene.mouseInBounds === true && clickedPolygon === false) {
+          // if (goalPosTmp != null) {
+          //   polygonGoal.remPoint(goalPosTmp);
+          // }
+          goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
+          //polygonGoal.addPoint(goalPosTmp);
+
+          var goalQuaTmp = new ROSLIB.Quaternion({
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+            w: 1.0
+          });
+          updateRobotGoalPosition(goalPosTmp, goalQuaTmp);
+
+          p.position.x = goalPosTmp.x;
+          p.position.y = goalPosTmp.y;
+          var poseStamped = {
+            header: {
+              //   seq: 1,
+              //   stamp: {
+              //     secs: 0,
+              //     nsecs: 0
+              //   },
+              frame_id: "map"
+            },
+            pose: p
+          };
+          goal.publish(poseStamped);
+        }
+        console.log('PoseStamped: ', poseStamped);
+        clickedPolygon = false;
       });
     }
   </script>
