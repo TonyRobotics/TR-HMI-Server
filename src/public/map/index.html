@@ -187,8 +187,8 @@
       });
 
       goalImg.subscribe(function (message) {
-        console.log();
-        updateRobotGoalPosition(message.pose.pose.position, message.pose.pose.orientation);
+        console.log('----goalImg: ', message);
+        updateRobotGoalPosition(message.pose.position, message.pose.orientation);
       });
 
       // Create the main viewer.
@@ -254,14 +254,15 @@
         robotMarker.visible = true;
       };
 
+      var initScaleSetImg = false;
       var updateRobotGoalPosition = function (pose, orientation) {
         // update the robots position on the map
         goalMarker.x = pose.x;
         goalMarker.y = -pose.y;
-        if (!initScaleSet) {
+        if (!initScaleSetImg) {
           goalMarker.scaleX = 0.01;
           goalMarker.scaleY = 0.01;
-          initScaleSet = true;
+          initScaleSetImg = true;
         }
         // change the angle
         goalMarker.rotation = viewer.scene.rosQuaternionToGlobalTheta(orientation);
@@ -337,12 +338,12 @@
           if (selectedPointIndex !== null) {
             selectedPointIndex = null;
           } else if (viewer.scene.mouseInBounds === true && clickedPolygon === false) {
-            if (goalPosTmp != null) {
-              polygonGoal.remPoint(goalPosTmp);
-            }
+            // if (goalPosTmp != null) {
+            //   polygonGoal.remPoint(goalPosTmp);
+            // }
             goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
             //polygonGoal.addPoint(goalPosTmp);
-            
+
             var goalQuaTmp = new ROSLIB.Quaternion({
               x: 0.0,
               y: 0.0,

@@ -56,8 +56,10 @@ var Transformable = (function () {
 
             if (!event.pointerID) event.pointerID = -1;
 
-            self._fingers[event.pointerID].current.x = event.stageX;
-            self._fingers[event.pointerID].current.y = event.stageY;
+            if (self._fingers[event.pointerID]) {
+                self._fingers[event.pointerID].current.x = event.stageX;
+                self._fingers[event.pointerID].current.y = event.stageY;
+            }
 
             _calculateActiveFingers();
 
@@ -95,7 +97,7 @@ var Transformable = (function () {
 
             _calculateActiveFingers();
 
-            event.active = self._activeFingers; 
+            event.active = self._activeFingers;
 
             self.dispatchEvent('complete', event);
         };
