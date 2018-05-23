@@ -9,7 +9,7 @@ var Transformable = (function () {
     var Transformable = function (stage) {
         var TOUCHSLOP = 1;
         var lastPressUpTime = 0;
-        var MULTITOUCH_UP_DELAY = 200;
+        var MULTITOUCH_UP_DELAY = 1000;
 
         // reference to instance
         var self = this;
