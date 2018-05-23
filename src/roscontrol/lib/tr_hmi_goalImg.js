@@ -42,9 +42,9 @@ function pubAngleSettingMsg(data, rosNode) {
         data.originalPose.pose.orientation = rosMath.eularAngleToQuaternion(0, 0, data.angle / 180 * Math.PI);
         goalImgMsg.publish(data.originalPose);
 
-        console.log('publishing /tr_hmi/goalImg :', data.originalPose);
+        console.log('publishing /tr_hmi/goalImg :');
     } else {
-        console.error('/tr_hmi/goalImg: invalid data:', data);
+        console.error('/tr_hmi/goalImg: invalid data:');
     }
 }
 

@@ -45,7 +45,7 @@ function pubGoalMsg(poseStamped, rosNode) {
 
     goalMsg.publish(poseStamped);
 
-    console.log('publishing /move_base_simple/goal :', poseStamped);
+    console.log('publishing /move_base_simple/goal :');
 }
 
 module.exports.pubGoalMsg = pubGoalMsg;

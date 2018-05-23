@@ -7,6 +7,7 @@
 var Transformable = (function () {
 
     var Transformable = function (stage) {
+        var TOUCHSLOP = 10;
 
         // reference to instance
         var self = this;
@@ -63,12 +64,18 @@ var Transformable = (function () {
             if (self._fingers[event.pointerID]) {
                 self._fingers[event.pointerID].current.x = event.stageX;
                 self._fingers[event.pointerID].current.y = event.stageY;
+
+                if (self._fingers[event.pointerID].old) {
+                    if (Math.abs(event.stageX - self._fingers[event.pointerID].old.x) > TOUCHSLOP ||
+                        Math.abs(event.stageY - self._fingers[event.pointerID].old.y) > TOUCHSLOP) {
+                        _didTransformed = true;
+                    }
+                }
             }
 
             _calculateActiveFingers();
 
             _changed = true;
-            _didTransformed = true;
         };
 
         // if positions changed (through pressmove): dispatch update-event for later usage and keep track of old point-position
