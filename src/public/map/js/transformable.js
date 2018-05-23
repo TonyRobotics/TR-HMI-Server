@@ -7,7 +7,9 @@
 var Transformable = (function () {
 
     var Transformable = function (stage) {
-        var TOUCHSLOP = 10;
+        var TOUCHSLOP = 12;
+        var lastPressUpTime = 0;
+        var MULTITOUCH_UP_DELAY = 200;
 
         // reference to instance
         var self = this;
@@ -66,7 +68,7 @@ var Transformable = (function () {
                 self._fingers[event.pointerID].current.y = event.stageY;
 
                 if (self._fingers[event.pointerID].old) {
-                    if (Math.abs(event.stageX - self._fingers[event.pointerID].old.x) > TOUCHSLOP ||
+                    if (Math.abs(event.stageX - self._fingers[event.pointerID].old.x) > TOUCHSLOP &&
                         Math.abs(event.stageY - self._fingers[event.pointerID].old.y) > TOUCHSLOP) {
                         _didTransformed = true;
                     }
@@ -111,10 +113,13 @@ var Transformable = (function () {
 
             event.active = self._activeFingers;
 
-            if (self._activeFingers == 0 && !_didTransformed) {
+            var now = new Date().getTime();
+
+            if (self._activeFingers == 0 && !_didTransformed && now - lastPressUpTime > MULTITOUCH_UP_DELAY) {
                 self.dispatchEvent('click', event);
             }
             _didTransformed = false;
+            lastPressUpTime = new Date().getTime();
 
             self.dispatchEvent('complete', event);
         };
