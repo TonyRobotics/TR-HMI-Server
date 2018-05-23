@@ -7,7 +7,7 @@
 var Transformable = (function () {
 
     var Transformable = function (stage) {
-        var TOUCHSLOP = 12;
+        var TOUCHSLOP = 1;
         var lastPressUpTime = 0;
         var MULTITOUCH_UP_DELAY = 200;
 
@@ -66,13 +66,6 @@ var Transformable = (function () {
             if (self._fingers[event.pointerID]) {
                 self._fingers[event.pointerID].current.x = event.stageX;
                 self._fingers[event.pointerID].current.y = event.stageY;
-
-                if (self._fingers[event.pointerID].old) {
-                    if (Math.abs(event.stageX - self._fingers[event.pointerID].old.x) > TOUCHSLOP &&
-                        Math.abs(event.stageY - self._fingers[event.pointerID].old.y) > TOUCHSLOP) {
-                        _didTransformed = true;
-                    }
-                }
             }
 
             _calculateActiveFingers();
@@ -137,7 +130,6 @@ var Transformable = (function () {
 
         var _handleScale = function () {
             if (self._activeFingers > 1) {
-                // _stopTween();
 
                 var points = [];
 
@@ -149,11 +141,6 @@ var Transformable = (function () {
                 }
 
                 var scale = _getDistance(points[0].current, points[1].current) / _getDistance(points[0].old, points[1].old);
-
-                // self.scaleX += ((scale - 1) * self.fraction.move.rotation * self.fraction.base);
-                // self.scaleY = self.scaleX;
-
-                // _holdBorders();
 
                 self.dispatchEvent('scale', {
                     start: points[0].current,
@@ -186,9 +173,13 @@ var Transformable = (function () {
                 self.dispatchEvent('move', {
                     x: point.current.x - point.old.x,
                     y: point.current.y - point.old.y
-                })
+                });
 
-                _didTransformed = true;
+                if (Math.abs(point.current.x - point.old.x) > TOUCHSLOP &&
+                    Math.abs(point.current.y - point.old.y) > TOUCHSLOP) {
+                    _didTransformed = true;
+                    console.log('slop!!')
+                }
             }
         }
 
