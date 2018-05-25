@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+
+  <script src="./js/three.min.js"></script>
+  <script src="./js/eventemitter2.min.js"></script>
+  <script src="./js/roslib.js"></script>
+  <script src="./js/ros3d.js"></script>
+
+  <script>
+    /**
+     * Setup all visualization elements when the page is loaded. 
+     */
+    function init() {
+      // Connect to ROS.
+      var ros = new ROSLIB.Ros({
+        url: 'ws://192.168.2.91:9090'
+      });
+
+      // Create the main viewer.
+      var viewer = new ROS3D.Viewer({
+        divID: 'map',
+        width: window.innerWidth,
+        height: window.innerHeight,
+        antialias: true
+      });
+
+      // Setup the marker client.
+      var gridClient = new ROS3D.OccupancyGridClient({
+        ros: ros,
+        rootObject: viewer.scene,
+        continuous: true
+      });
+    }
+  </script>
+</head>
+
+<body onload="init()" style="margin:0px;">
+  <div id="map"></div>
+</body>
+
+</html>

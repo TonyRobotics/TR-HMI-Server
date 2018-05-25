@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <title>Download TR HMI Mobile</title>
+</head>
+
+<body>
+    <p id="msg">Loading......</p>
+    <script>
+        var ua = navigator.userAgent.toLowerCase();
+        let url, link;
+        if (/micromessenger/.test(ua)) {
+            let p = document.getElementById('msg');
+            p.innerText = "请点击右上角菜单，选择在浏览器中打开";
+        } else if (/iphone|ipad|ipod/.test(ua)) {
+            url = `itms-services://?action=download-manifest&url=${window.location.href}ios/tr-hmi.plist`;
+            let a = document.createElement('a');
+            a.href = url;
+            a.innerText = 'TR-HMI.ipa'
+            a.click();
+            link = a;
+        } else if (/android/.test(ua)) {
+            let a = document.createElement('a');
+            url = `${window.location.href}android/tr-hmi.apk`;
+            a.href = url;
+            a.innerText = 'TR-HMI.apk'
+            a.download = 'tr-hmi.apk';
+            a.click();
+            link = a;
+        } else {
+            alert('请使用手机访问！');
+        }
+        if (link) {
+            let p = document.getElementById('msg');
+            p.innerText = '如果没有自动下载，请点击以下链接手动下载：';
+            p.appendChild(link);
+        }
+    </script>
+</body>
+
+</html>

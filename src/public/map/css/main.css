@@ -1,0 +1,37 @@
+body {
+    /* background-color: #7E7E7E; */
+    background-color: black;
+}
+
+#dataViewers {
+    position: fixed;
+    display: block;
+    left: 16px;
+    bottom: 16px;
+}
+
+#funcBtns {
+    position: fixed;
+    display: block;
+    right: 8px;
+    bottom: 8px;
+}
+
+#funcBtns img {
+    background-color: rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    display: block;
+    margin-bottom: 4px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    border-radius: 4px;
+}
+
+#dataViewers span {
+    color: aqua;
+}
+
+#map canvas {
+    width: 100%;
+}

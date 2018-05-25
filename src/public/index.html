@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <title>Test Page</title>
+    <script src="js/socket.io.js"></script>
+</head>
+
+<body>
+    <div style="display: block">
+        <input id="socketTopic" />
+        </br>
+        <textarea id="socketReq" cols="30" rows="10"></textarea>
+        </br>
+        <button id="sendRaw">Send Raw Socket</button>
+    </div>
+
+    <script>
+        let socket = io();
+
+        socket.on('connect', () => {
+            console.log('client connected');
+        });
+        socket.on('event', (data) => {
+            console.log('event:', data);
+        });
+        socket.on('disconnect', () => {
+            console.log('client disconnected.');
+        });
+
+        socket.on('/global/map/goal/click', (data) => {
+            console.log('map click:', data);
+        });
+
+        document.getElementById('sendRaw').onclick = function () {
+            let topic = document.getElementById('socketTopic').value;
+            let req = document.getElementById('socketReq').value;
+            socket.emit(topic, req || '' ? JSON.parse(req) : {}, (data) => {
+                console.log(topic + ' ==>:', data);
+                alert(JSON.stringify(data));
+            })
+        }
+    </script>
+</body>
+
+</html>
