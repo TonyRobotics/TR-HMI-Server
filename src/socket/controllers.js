@@ -137,11 +137,30 @@ function onMoveBaseSimpleGoal(req, fn) {
     }
 }
 
+/**
+ * 前端实时设定角度回传，交给地图实时显示反馈
+ * req:
+ * ```
+ * {
+ *  originalPose:{},///地图点击原始位置数据
+ *  angle:0//用户设定角度，0-360
+ * }
+ * ```
+ */
+function onSettingAngle(req, fn) {
+    if (req) {
+        console.log('onSettingAngle:', req);
+
+        rosControl.pubAngleSettingMsg(req)
+    }
+}
+
 module.exports = {
     'onLaunchMode': onLaunchMode,
     'onCmdVel': onCmdVel,
     'onRosOutCmd': onRosOutCmd,
     'onMapInitialAngle': onMapInitialAngle,
     'onMoveBaseSimpleGoal': onMoveBaseSimpleGoal,
-    'getCurrentLaunchMode': getCurrentLaunchMode
+    'getCurrentLaunchMode': getCurrentLaunchMode,
+    'onSettingAngle': onSettingAngle,
 }

@@ -7,6 +7,9 @@
 var Transformable = (function () {
 
     var Transformable = function (stage) {
+        var TOUCHSLOP = 1;
+        var lastPressUpTime = 0;
+        var MULTITOUCH_UP_DELAY = 1000;
 
         // reference to instance
         var self = this;
@@ -15,6 +18,8 @@ var Transformable = (function () {
         self._fingers = [];
 
         var _changed = false;
+
+        var _didTransformed = false;
 
         var Init = function () {
             self._initialized = true;
@@ -49,6 +54,8 @@ var Transformable = (function () {
             self.dispatchEvent('start', {
                 active: self._activeFingers
             });
+
+            _didTransformed = false;
         };
 
         // update touchpoint-positions
@@ -56,8 +63,10 @@ var Transformable = (function () {
 
             if (!event.pointerID) event.pointerID = -1;
 
-            self._fingers[event.pointerID].current.x = event.stageX;
-            self._fingers[event.pointerID].current.y = event.stageY;
+            if (self._fingers[event.pointerID]) {
+                self._fingers[event.pointerID].current.x = event.stageX;
+                self._fingers[event.pointerID].current.y = event.stageY;
+            }
 
             _calculateActiveFingers();
 
@@ -95,7 +104,15 @@ var Transformable = (function () {
 
             _calculateActiveFingers();
 
-            event.active = self._activeFingers; 
+            event.active = self._activeFingers;
+
+            var now = new Date().getTime();
+
+            if (self._activeFingers == 0 && !_didTransformed && now - lastPressUpTime > MULTITOUCH_UP_DELAY) {
+                self.dispatchEvent('click', event);
+            }
+            _didTransformed = false;
+            lastPressUpTime = new Date().getTime();
 
             self.dispatchEvent('complete', event);
         };
@@ -113,7 +130,6 @@ var Transformable = (function () {
 
         var _handleScale = function () {
             if (self._activeFingers > 1) {
-                // _stopTween();
 
                 var points = [];
 
@@ -126,15 +142,12 @@ var Transformable = (function () {
 
                 var scale = _getDistance(points[0].current, points[1].current) / _getDistance(points[0].old, points[1].old);
 
-                // self.scaleX += ((scale - 1) * self.fraction.move.rotation * self.fraction.base);
-                // self.scaleY = self.scaleX;
-
-                // _holdBorders();
-
                 self.dispatchEvent('scale', {
                     start: points[0].current,
                     scale: scale
                 });
+
+                _didTransformed = true;
             }
         }
 
@@ -160,7 +173,13 @@ var Transformable = (function () {
                 self.dispatchEvent('move', {
                     x: point.current.x - point.old.x,
                     y: point.current.y - point.old.y
-                })
+                });
+
+                if (Math.abs(point.current.x - point.old.x) > TOUCHSLOP &&
+                    Math.abs(point.current.y - point.old.y) > TOUCHSLOP) {
+                    _didTransformed = true;
+                    console.log('slop!!')
+                }
             }
         }
 
