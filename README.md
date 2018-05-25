@@ -1,12 +1,12 @@
-# TR HMI Service
+# TR HMI Service [中文](doc/zh_CN/README.md)
 
 TonyRobotics common human machine interface services in NodeJS.
 
 ## Documents
 
-1. [Deploy Guide](doc/zh_CN/DEPLOY.md)
-2. [Socket API Reference](doc/zh_CN/SOCKET_API.md)
-3. [Restful API Reference](doc/zh_CN/RESTFUL_API.md)
+1. [Deploy Guide](doc/en/DEPLOY.md)
+2. [Socket API Reference](doc/en/SOCKET_API.md)
+3. [Restful API Reference](doc/en/RESTFUL_API.md)
 
 ## Static Page
 
