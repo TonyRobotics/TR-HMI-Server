@@ -37,7 +37,7 @@ rosControl.subscribeMapGoal(debounce((msg) => {
     io.sockets.emit('/global/map/goal/click', msg);
 }, 600));
 
-//subscribe realtime odometry message
+//retransmission realtime odometry message
 rosControl.subscribeOdom((msg) => {
     io.sockets.emit('/global/map/position', msg);
 });

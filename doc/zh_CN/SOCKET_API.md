@@ -139,7 +139,22 @@
 }
 ```
 
-### 3、导航到目标点（导航模式）
+### 3、设置目标点或导航点的朝向
+
+> 发送 topic: `/global/map/goal/angle_setting`
+
+- request 参数：
+
+```json
+{
+  "originalPose":{
+    //... 监听点击事件得到的 PoseStamped 对象
+  },
+  "angle":180 //用户设定的方向
+}
+```
+
+### 4、导航到目标点（导航模式）
 
 > 发送topic: `/move_base_simple/goal`
 
