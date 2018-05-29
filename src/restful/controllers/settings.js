@@ -1,9 +1,4 @@
-const low = require('lowdb');
-const path = require('path');
-const FileSync = require('lowdb/adapters/FileSync');
-
-const adapter = new FileSync(path.join(__dirname, '../../data/db.json'));
-const db = low(adapter)
+let db = require('../../utils/singletonDB').getDB();
 
 /**
  * 获取默认地图

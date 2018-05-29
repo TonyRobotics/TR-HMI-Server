@@ -5,11 +5,10 @@
 'use strict'
 
 const path = require('path');
-const low = require('lowdb');
 const os = require('os');
 const fs = require('fs');
-const FileSync = require('lowdb/adapters/FileSync');
-const db = low(new FileSync(path.join(__dirname, 'db.json')));
+
+let db = require('../utils/singletonDB').getDB();
 
 /**
  * checkout the initial configs.
@@ -43,12 +42,13 @@ let forceResetConfigs = () => {
                 maxVt: 5
             }
         },
-        maps: []
+        maps: [],
+        speechTexts: [],
     }).write();
 
     prepareDefaultMap();
 
-    console.log('[√] 服务配置完成！')
+    console.log('[√] 服务配置完成');
 }
 
 /**

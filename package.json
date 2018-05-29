@@ -29,6 +29,7 @@
     "lodash.debounce": "^4.0.8",
     "lowdb": "^1.0.0",
     "rosnodejs": "^2.2.0",
+    "shortid": "^2.2.8",
     "socket.io": "^2.1.0"
   }
 }
