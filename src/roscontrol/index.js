@@ -41,6 +41,7 @@ function startHMIBridgeNode(callback) {
 }
 
 /**
+ * TODO: 根据不同底盘型号配置对应 launch 文件
  * 切换 tr 工作模式
  * @param mode TR 底盘现有三种工作模式, 
  *              `MODE.CONTROL`（遥控模式，默认），
@@ -54,11 +55,11 @@ function toggleRosLaunchMode(mode) {
     }
 
     if (mode == MODE.CONTROL) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['tr05_controller', 'tr05_controller.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', ['able05_navigation', 'controller.launch']);
     } else if (mode == MODE.MAPPING) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['tr05_navigation', 'tr05_mapping.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'mapping.launch']);
     } else if (mode == MODE.NAVIGATION) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['tr05_navigation', 'tr05_navigation.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'navigation.launch']);
     } else {
         console.error('unrecognized mode:', mode);
     }

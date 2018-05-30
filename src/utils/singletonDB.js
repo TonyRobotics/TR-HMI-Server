@@ -13,8 +13,6 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync(path.join(__dirname, '../data/db.json'));
 const db = low(adapter);
 
-let fn_getDB = () => {
-    return db;
-}
+let fn_getDB = () => db;
 
 module.exports.getDB = fn_getDB;
