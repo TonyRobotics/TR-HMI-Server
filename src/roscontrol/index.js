@@ -55,8 +55,9 @@ function toggleRosLaunchMode(mode) {
     }
 
     if (mode == MODE.CONTROL) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['able05_navigation', 'controller.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'controller.launch']);
     } else if (mode == MODE.MAPPING) {
+        stopMapServer();
         currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'mapping.launch']);
     } else if (mode == MODE.NAVIGATION) {
         currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'navigation.launch']);
@@ -69,11 +70,18 @@ function toggleRosLaunchMode(mode) {
  * 加载/切换地图
  */
 function reloadMap(fullName, callback) {
+    stopMapServer();
+    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}`], callback);
+}
+
+/**
+ * stop the current map_server
+ */
+function stopMapServer() {
     if (mapServerPid) {
         killSpawn(mapServerPid);
         mapServerPid = null;
     }
-    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}`], callback);
 }
 
 /**
@@ -137,4 +145,5 @@ module.exports = {
     'runRosLaunch': runLaunch.runRosLaunch,
     'stopRosLaunch': runLaunch.stopRosLaunch,
     'pubAngleSettingMsg': tr_hmi_goalImg.pubAngleSettingMsg,
+    'stopMapServer': stopMapServer,
 }
