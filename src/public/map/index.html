@@ -301,12 +301,6 @@
       viewer.scene.addChild(polygonPlan);
       //viewer.scene.addChild(polygonGoal);
 
-      //实现舞台多指触控变换
-      let zoomView = new ROS2D.ZoomView({
-        rootObject: viewer.scene,
-        minScale: 20
-      });
-
       var transformable = new Transformable(viewer.scene);
 
       let logger = document.getElementById('logger');
@@ -314,15 +308,24 @@
       // logger.innerText = 'Update : ' + data.active;
       // });
 
-      transformable.on('scale', (data) => {
-        zoomView.startZoom(data.start.x, data.start.y);
-        zoomView.zoom(viewer.scene.scaleX / zoomView.startScale.x * data.scale);
-      });
+      let touchable = getParameterByName('touchable');
+      if (touchable == 1) {
+        //实现舞台多指触控变换
+        let zoomView = new ROS2D.ZoomView({
+          rootObject: viewer.scene,
+          minScale: 20
+        });
 
-      transformable.on('move', (diff) => {
-        viewer.scene.x += (diff.x);
-        viewer.scene.y += (diff.y);
-      });
+        transformable.on('scale', (data) => {
+          zoomView.startZoom(data.start.x, data.start.y);
+          zoomView.zoom(viewer.scene.scaleX / zoomView.startScale.x * data.scale);
+        });
+
+        transformable.on('move', (diff) => {
+          viewer.scene.x += (diff.x);
+          viewer.scene.y += (diff.y);
+        });
+      }
 
       // transformable.on('complete', (event) => {
       //   logger.innerText = 'complete : ' + event.active;
@@ -366,6 +369,26 @@
         console.log('PoseStamped: ', poseStamped);
         clickedPolygon = false;
       });
+    }
+
+    function getParameterByName(name, url) {
+      if (!url) {
+        url = window.location.href;
+      }
+
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+
+      if (!results) {
+        return null;
+      }
+
+      if (!results[2]) {
+        return '';
+      }
+
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
   </script>
 </head>
