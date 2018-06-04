@@ -32,6 +32,10 @@ body {
     color: aqua;
 }
 
+#map {
+    text-align: center;
+}
+
 #map canvas {
-    width: 100%;
+    height: 100vh;
 }
