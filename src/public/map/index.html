@@ -372,14 +372,19 @@
     }
 
     function setMapHeight() {
-      var winHeight = 0;
-      if (window.innerHeight) {
-        winHeight = window.innerHeight;
-      } else if ((document.body) && (document.body.clientHeight)) {
-        winHeight = document.body.clientHeight;
-      }
       var canvas = document.getElementsByTagName('canvas')[0];
-      canvas.style.height = winHeight + 'px';
+
+      if (getParameterByName('touchable') == 1) {
+        canvas.style.width = '100%';
+      } else {
+        var winHeight = 0;
+        if (window.innerHeight) {
+          winHeight = window.innerHeight;
+        } else if ((document.body) && (document.body.clientHeight)) {
+          winHeight = document.body.clientHeight;
+        }
+        canvas.style.height = winHeight + 'px';
+      }
     };
 
     function getParameterByName(name, url) {
