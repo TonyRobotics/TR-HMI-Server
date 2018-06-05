@@ -1,11 +1,6 @@
-html {
-    height: 100%;
-}
-
 body {
     /* background-color: #7E7E7E; */
     background-color: black;
-    height: 100%;
 }
 
 #dataViewers {
@@ -39,9 +34,4 @@ body {
 
 #map {
     text-align: center;
-    height: 100%;
-}
-
-#map canvas {
-    height: 100%;
 }

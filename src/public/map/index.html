@@ -371,6 +371,17 @@
       });
     }
 
+    function setMapHeight() {
+      var winHeight = 0;
+      if (window.innerHeight) {
+        winHeight = window.innerHeight;
+      } else if ((document.body) && (document.body.clientHeight)) {
+        winHeight = document.body.clientHeight;
+      }
+      var canvas = document.getElementsByTagName('canvas')[0];
+      canvas.style.height = winHeight + 'px';
+    };
+
     function getParameterByName(name, url) {
       if (!url) {
         url = window.location.href;
@@ -393,7 +404,7 @@
   </script>
 </head>
 
-<body onload="init()" style="margin:0px;">
+<body onload="init();setMapHeight();" style="margin:0px;">
   <div id="dataViewers">
     <span id="logger" style="display: none">Testing……</span>
   </div>
