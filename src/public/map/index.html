@@ -10,6 +10,8 @@
   <script src="./js/roslib.js"></script>
   <script src="./js/ros2d.js"></script>
   <script src="./js/transformable.js"></script>
+  <script src="./js/LaserShape.js"></script>
+  <script src="./js/LaserShapeClient.js"></script>
 
   <script>
     var viewer;
@@ -368,6 +370,11 @@
         }
         console.log('PoseStamped: ', poseStamped);
         clickedPolygon = false;
+      });
+
+      var laserClient = new ROS2D.LaserShapeClient({
+        ros: ros,
+        rootObject: viewer.scene,
       });
     }
 
