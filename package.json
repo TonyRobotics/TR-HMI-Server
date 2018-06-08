@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/Ydcool/TR_HMI_Services.git"
+    "url": "git+ssh://git@github.com/TonyRobotics/TR-HMI-Ser.git"
   },
   "author": "Dominic",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/Ydcool/TR_HMI_Services/issues"
+    "url": "https://github.com/TonyRobotics/TR-HMI-Ser/issues"
   },
-  "homepage": "https://gitlab.com/Ydcool/TR_HMI_Services#README",
+  "homepage": "https://github.com/TonyRobotics/TR-HMI-Ser#README",
   "dependencies": {
     "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
@@ -29,6 +29,7 @@
     "lodash.debounce": "^4.0.8",
     "lowdb": "^1.0.0",
     "rosnodejs": "^2.2.0",
+    "shortid": "^2.2.8",
     "socket.io": "^2.1.0"
   }
 }

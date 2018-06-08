@@ -16,10 +16,15 @@ const cmd_vel = require('./lib/cmd_vel');
 const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
 const runLaunch = require('./lib/runlaunch');
 const tr_hmi_goalImg = require('./lib/tr_hmi_goalImg');
+const jsonUtil = require('../utils/jsonFileUtil');
+const path = require('path');
+const db = require('../utils/singletonDB').getDB();
 
 let currentLaunchPid,
     mapServerPid,
     mapSaverPid;
+
+let productInfo;
 
 /**
  * ros launch x ,工作模式
@@ -41,6 +46,7 @@ function startHMIBridgeNode(callback) {
 }
 
 /**
+ * TODO: 根据不同底盘型号配置对应 launch 文件
  * 切换 tr 工作模式
  * @param mode TR 底盘现有三种工作模式, 
  *              `MODE.CONTROL`（遥控模式，默认），
@@ -53,14 +59,35 @@ function toggleRosLaunchMode(mode) {
         currentLaunchPid = null;
     }
 
+    if (!productInfo) {
+        let product = db.get('product').value();
+        productInfo = db.get('productions').find({
+            name: product
+        }).value();
+        if (!productInfo) {
+            console.error('Failed to load product info for name:' + product);
+            //fallback product info
+            productInfo = {
+                name: "abel05",
+                package: "abel05_navigation",
+                launchFiles: {
+                    mapping: "mapping.launch",
+                    navigation: "navigation.launch",
+                    control: "controller.launch"
+                }
+            }
+        }
+    }
+
     if (mode == MODE.CONTROL) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['tr05_controller', 'tr05_controller.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', [productInfo.package, productInfo.launchFiles.control]);
     } else if (mode == MODE.MAPPING) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['tr05_navigation', 'tr05_mapping.launch']);
+        stopMapServer();
+        currentLaunchPid = simpleSpawn('roslaunch', [productInfo.package, productInfo.launchFiles.mapping]);
     } else if (mode == MODE.NAVIGATION) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['tr05_navigation', 'tr05_navigation.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', [productInfo.package, productInfo.launchFiles.navigation]);
     } else {
-        console.error('unrecognized mode:', mode);
+        console.error('Unsupported launch mode:', mode);
     }
 }
 
@@ -68,11 +95,18 @@ function toggleRosLaunchMode(mode) {
  * 加载/切换地图
  */
 function reloadMap(fullName, callback) {
+    stopMapServer();
+    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}`], callback);
+}
+
+/**
+ * stop the current map_server
+ */
+function stopMapServer() {
     if (mapServerPid) {
         killSpawn(mapServerPid);
         mapServerPid = null;
     }
-    mapServerPid = simpleSpawn('rosrun', ['map_server', 'map_server', `${fullName}`], callback);
 }
 
 /**
@@ -136,4 +170,5 @@ module.exports = {
     'runRosLaunch': runLaunch.runRosLaunch,
     'stopRosLaunch': runLaunch.stopRosLaunch,
     'pubAngleSettingMsg': tr_hmi_goalImg.pubAngleSettingMsg,
+    'stopMapServer': stopMapServer,
 }

@@ -6,10 +6,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const db = low(new FileSync(path.join(__dirname, '../../data/db.json')));
 const rosCtrl = require('../../roscontrol');
+
+let db = require('../../utils/singletonDB').getDB();
 
 let fn_listMap = async (ctx, next) => {
     let maps = db.get('maps').values().map((v) => {

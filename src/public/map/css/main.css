@@ -32,6 +32,6 @@ body {
     color: aqua;
 }
 
-#map canvas {
-    width: 100%;
+#map {
+    text-align: center;
 }

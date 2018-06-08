@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+    <!-- 地图使用 -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"></include>
-    <node name="web_vdieo_server" pkg="web_video_server" type="web_video_server"/>
-    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node"/>
-    <!-- 默认不启动控制模式 -->
-    <!-- <include file="$(find tr05_controller)/launch/tr05_controller.launch"></include> -->
+    <!-- 摄像头 -->
+    <!-- <node name="web_vdieo_server" pkg="web_video_server" type="web_video_server"/><node name="usb_cam" pkg="usb_cam" type="usb_cam_node"/> -->
 </launch>
