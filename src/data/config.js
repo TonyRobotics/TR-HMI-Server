@@ -7,6 +7,8 @@
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const jsonUtil = require('../utils/jsonFileUtil');
+const argvHandler = require('../utils/argvHandler');
 
 let db = require('../utils/singletonDB').getDB();
 
@@ -15,22 +17,32 @@ let db = require('../utils/singletonDB').getDB();
  */
 let checkAndConfig = () => {
     //check and flag.
-    let initialized = db.get('configs.initialized').value();
-    if (!initialized) {
-        console.log('[-] 检测到首次运行，开始进行配置……')
-        forceResetConfigs();
-    } else {
-        console.log('[√] 检测到配置文件!');
-    }
+    argvHandler.find('reset', (v) => {
+        if (v) {
+            forceResetConfigs();
+        } else {
+            let initialized = db.get('configs.initialized').value();
+            if (!initialized) {
+                console.log('[-] Start configuration for the first launch……')
+                forceResetConfigs();
+            } else {
+                console.log('[√] already configred !');
+            }
+        }
+    });
+
+    configProducts();
 }
 
 let forceResetConfigs = () => {
-    console.log('[-] 开始应用默认配置……')
+    console.log('[-] start applying default configuration……')
 
+    //check and create default map dir
     let _mapsDir = path.join(os.homedir(), 'maps');
     if (!fs.existsSync(_mapsDir)) {
         fs.mkdirSync(_mapsDir);
     }
+    //configure default database schema and data.
     db.defaults({
         configs: {
             initialized: true,
@@ -44,22 +56,25 @@ let forceResetConfigs = () => {
         },
         maps: [],
         speechTexts: [],
+        product: 'able05',
     }).write();
 
     prepareDefaultMap();
 
-    console.log('[√] 服务配置完成');
+    loadProductionsData();
+
+    console.log('[√] reset configration complete!');
 }
 
 /**
- * 配置默认地图
+ * move the default map file into the default map folder if not exist.
  */
 let prepareDefaultMap = () => {
     let maps = db.get('maps').value();
     if (maps && maps.length > 0) {
-        console.log('[√] 检测到地图存在，跳过默认配置！');
+        console.log('[√] map file exists, step over...');
     } else if (fs.existsSync(path.join(__dirname, 'default.pgm'))) {
-        console.log('[-] 开始配置默认地图……');
+        console.log('[-] start applying default map file...');
 
         let destDir = path.join(os.homedir(), 'maps');
         fs.copyFileSync(path.join(__dirname, 'default.pgm'), path.join(destDir, 'default.pgm'));
@@ -72,9 +87,39 @@ let prepareDefaultMap = () => {
             })
             .write();
 
-        console.log('[√] 默认地图配置完成！');
+        console.log('[√] default map is ready.');
     } else {
-        console.error('[x] 找不到默认地图文件，跳过配置！');
+        console.error('[x] missing the default map file, exit.');
+    }
+}
+
+
+/**
+ * load the configration for the specified production of robot.
+ */
+let configProducts = async () => {
+    argvHandler.find('product', (v) => {
+        if (v) {
+            db.set('product', v).write();
+            console.log(`[√] apply configuration for prodution ${v}`);
+        } else {
+            console.log(`[!] No production args specified! we\'ll use "${db.get('product').value()}" as default! ` +
+                'To specify your product, please apply "production=<your product>" into running args.');
+        }
+    });
+}
+
+/**
+ * load productions configuration into database.
+ */
+let loadProductionsData = async () => {
+    let productionsFile = path.join(__dirname, 'productions.json');
+    let productions = await jsonUtil.read(productionsFile);
+    if (productions) {
+        db.set('productions', productions).write();
+        console.log('[√] finish load productions info into database.')
+    } else {
+        console.log('[x] missing productions data! ');
     }
 }
 

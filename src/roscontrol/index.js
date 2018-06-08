@@ -16,10 +16,15 @@ const cmd_vel = require('./lib/cmd_vel');
 const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
 const runLaunch = require('./lib/runlaunch');
 const tr_hmi_goalImg = require('./lib/tr_hmi_goalImg');
+const jsonUtil = require('../utils/jsonFileUtil');
+const path = require('path');
+const db = require('../utils/singletonDB').getDB();
 
 let currentLaunchPid,
     mapServerPid,
     mapSaverPid;
+
+let productInfo;
 
 /**
  * ros launch x ,工作模式
@@ -54,15 +59,35 @@ function toggleRosLaunchMode(mode) {
         currentLaunchPid = null;
     }
 
+    if (!productInfo) {
+        let product = db.get('product').value();
+        productInfo = db.get('productions').find({
+            name: product
+        }).value();
+        if (!productInfo) {
+            console.error('Failed to load product info for name:' + product);
+            //fallback product info
+            productInfo = {
+                name: "abel05",
+                package: "abel05_navigation",
+                launchFiles: {
+                    mapping: "mapping.launch",
+                    navigation: "navigation.launch",
+                    control: "controller.launch"
+                }
+            }
+        }
+    }
+
     if (mode == MODE.CONTROL) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'controller.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', [productInfo.package, productInfo.launchFiles.control]);
     } else if (mode == MODE.MAPPING) {
         stopMapServer();
-        currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'mapping.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', [productInfo.package, productInfo.launchFiles.mapping]);
     } else if (mode == MODE.NAVIGATION) {
-        currentLaunchPid = simpleSpawn('roslaunch', ['abel05_navigation', 'navigation.launch']);
+        currentLaunchPid = simpleSpawn('roslaunch', [productInfo.package, productInfo.launchFiles.navigation]);
     } else {
-        console.error('unrecognized mode:', mode);
+        console.error('Unsupported launch mode:', mode);
     }
 }
 

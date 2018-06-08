@@ -1,0 +1,41 @@
+[{
+        "name": "abel05",
+        "productName":"ABEL 05",
+        "package": "abel05_navigation",
+        "launchFiles": {
+            "mapping": "mapping.launch",
+            "navigation": "navigation.launch",
+            "control": "controller.launch"
+        }
+    },
+    {
+        "name": "abel10",
+        "productName":"ABEL 10",
+        "package": "abel10_navigation",
+        "launchFiles": {
+            "mapping": "mapping.launch",
+            "navigation": "navigation.launch",
+            "control": "controller.launch"
+        }
+    },
+    {
+        "name": "xiaobai",
+        "productName":"XiaoBai",
+        "package": "xiaobai_navigation",
+        "launchFiles": {
+            "mapping": "mapping.launch",
+            "navigation": "navigation.launch",
+            "control": "controller.launch"
+        }
+    },
+    {
+        "name": "trtank",
+        "productName":"TR-Tank",
+        "package": "tank_driver",
+        "launchFiles": {
+            "mapping": "mapping.launch",
+            "navigation": "navigation.launch",
+            "control": "tank_control.launch"
+        }
+    }
+]
