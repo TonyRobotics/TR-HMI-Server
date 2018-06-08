@@ -2,8 +2,8 @@
 
 ## 环境准备
 
-1. `NodeJS　^v8.0.0` ： 安装参考官方手册. 版本建议 `8.x` 以上；
-2. `cnpm ^v5.6.0` : 国内 NodeJS 仓库镜像源，可加快访问速度，使用参考 [cnpm](https://npm.taobao.org). 安装方式：`sudo npm install -g cnpm --registry=https://registry.npm.taobao.org`
+1. `NodeJS` ： 安装参考官方手册. 版本建议 `8.x` 以上；
+2. `cnpm` : 国内 NodeJS 仓库镜像源，可加快访问速度，使用参考 [cnpm](https://npm.taobao.org). 安装方式：`sudo npm install -g cnpm --registry=https://registry.npm.taobao.org`
 
 ## 代码部署
 
@@ -13,11 +13,12 @@
 4. 安装依赖包：`cnpm install`;
 5. 直接启动服务：`node src/index.js`,　强烈建议使用 [PM2](https://github.com/Unitech/pm2) 管理服务；
 6. \*(可选)：如果使用 `pm2` 管理服务，以下是简明使用教程：
-   * 安装 pm2: `sudo cnpm install -g pm2`；
-   * 设置开机启动：`pm2 startup`, 执行此命令后，会打印出一行命令，复制并执行 命令即可；
-   * 进入 HMI 服务所在文件夹：`cd tr_hmi/TR-HMI-Service`；
-   * 启动 HMI 服务：`pm2 start src/index.js --product=abel05`,根据当产  品指定相应型号参数，详细见下方启动参数说明；
-   * 保存 HMI 服务：若上一步顺利启动服务，可执行 `pm2 save` 保存当前服务配置，以使 HMI 服务开机自动启动；
+   1. 安装 pm2: `sudo cnpm install -g pm2`；
+   2. 设置开机启动：`pm2 startup`, 执行此命令后，会打印出一行命令，复制并执行 命令即可；
+   3. 进入 HMI 服务所在文件夹：`cd ~/tr_hmi/TR-HMI-Server`；
+   4. 启动 HMI 服务：`pm2 start src/index.js --product=abel05`,根据当产品指定相应型号参数，详细见下方启动参数说明；
+   5. 保存 HMI 服务：若上一步顺利启动服务，可执行 `pm2 save` 保存当前服务配置，以使 HMI 服务开机自动启动；
+   6. 若系统环境变量有所更新，为避免出现异常 bug，请移除当前 pm2 的服务配置：`pm2 delete all`，然后重启 HMI 服务并保存（重复 4,5)；
 
 ## 启动参数
 
