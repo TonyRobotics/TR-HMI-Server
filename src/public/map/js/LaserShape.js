@@ -11,7 +11,6 @@
  *   * colorfulIntensity (optional) - use colorful points to indentify intensity
  *   * pointSize (optional) - the size of the point
  *   * pointColor (optional) - the createjs color for the point
- *   * rotation (optional) - rotation of laser from tf transmations
  *   * translation (optional) - translation of laser from tf transmations
  */
 ROS2D.LaserShape = function (options) {
@@ -25,7 +24,8 @@ ROS2D.LaserShape = function (options) {
 
     this.graphics = new createjs.Graphics();
 
-    var currRotation = this.transform ? createjs.Stage.prototype.rosQuaternionToGlobalTheta.call(this, this.transform.rotation) : 0;
+    // var currRotation = this.transform ? createjs.Stage.prototype.rosQuaternionToGlobalTheta.call(this, this.transform.rotation) : 0;
+    // currRotation *= (Math.PI / 180);
 
     var tlX = this.transform ? this.transform.translation.x : 0;
     var tlY = this.transform ? this.transform.translation.y : 0;
@@ -37,12 +37,12 @@ ROS2D.LaserShape = function (options) {
         var r = ranges[i];
 
         if (r !== null && r >= this.message.range_min && r <= this.message.range_max) {
-            var t = Math.PI + currRotation - (i * this.message.angle_increment + this.message.angle_min);
+            var t = (i * this.message.angle_increment + this.message.angle_min);
 
             var x = r * Math.cos(t);
             var y = r * Math.sin(t);
 
-            this.graphics.beginFill(this.pointColor).drawCircle(x + tlX, y - tlY, this.pointSize / this.scale);
+            this.graphics.beginFill(this.pointColor).drawCircle(x, y, this.pointSize / this.scale);
         }
     }
 

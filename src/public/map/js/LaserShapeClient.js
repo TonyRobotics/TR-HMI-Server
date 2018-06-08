@@ -33,7 +33,7 @@ ROS2D.LaserShapeClient = function (options) {
         }
 
         that.currentLaser = new ROS2D.LaserShape({
-            pointSize: 1,
+            pointSize: 2,
             message: message,
             scale: that.rootObject.scaleX || 1,
             transform: that.currentTransform,
@@ -62,11 +62,11 @@ ROS2D.LaserShapeClient = function (options) {
             if (message.transforms &&
                 message.transforms[0]) {
 
-                if (message.transforms[0].child_frame_id == 'laser_link') {
+                if (message.transforms[0].child_frame_id == 'map') {
 
-                    // that.defaultTransform = message.transforms[0].transform;
+                    // that.currentTransform = message.transforms[0].transform;
 
-                } else if (message.transforms[0].child_frame_id == 'odom') {
+                } else if (message.transforms[0].child_frame_id == 'laser_link') {
 
                     that.currentTransform = message.transforms[0].transform;
                 }
