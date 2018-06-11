@@ -56,7 +56,7 @@ let forceResetConfigs = () => {
         },
         maps: [],
         speechTexts: [],
-        product: 'able05',
+        product: 'abel05',
     }).write();
 
     prepareDefaultMap();
