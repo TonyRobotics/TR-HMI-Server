@@ -48,31 +48,27 @@ ROS2D.LaserShapeClient = function (options) {
         // console.log('/scan ==>', message);
     });
 
-    // subscribe to the tf topic
-    var rosTFTopic = new ROSLIB.Topic({
+    var tfClient = new ROSLIB.TFClient({
         ros: ros,
-        name: 'tf',
-        messageType: 'tf2_msgs/TFMessage'
+        fixedFrame: 'map',
+        angularThres: 0.01,
+        transThres: 0.01
     });
 
-    rosTFTopic.subscribe(function (message) {
-        if (that.currentLaser) {
-            // rosTFTopic.unsubscribe();
-
-            if (message.transforms &&
-                message.transforms[0]) {
-
-                if (message.transforms[0].child_frame_id == 'map') {
-
-                    // that.currentTransform = message.transforms[0].transform;
-
-                } else if (message.transforms[0].child_frame_id == 'laser_link') {
-
-                    that.currentTransform = message.transforms[0].transform;
-                }
-            }
-        }
+    tfClient.subscribe('odom', function (tf) {
+        console.log('laserlink:', tf);
+        that.currentTransform = tf;
     });
+
+    /*
+    tfClient.subscribe('base_link', function (tf) {
+        console.log('baselink:', tf);
+    });
+
+    tfClient.subscribe('odom', function (tf) {
+        console.log('odom:', tf);
+    });
+    */
 };
 
 /**
