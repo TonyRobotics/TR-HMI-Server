@@ -4386,6 +4386,23 @@ ROS3D.MouseHandler.prototype.processDomEvent = function (domEvent) {
     return;
   }
 
+  // if (domEvent.type == 'click') {
+  //   console.log('click!')
+  //   var intersects = [];
+  //   intersects = mouseRaycaster.intersectObject(this.rootObject, true);
+  //   if (intersects.length > 0) {
+  //     for(var i = 0;i<intersects.length;i++){
+  //       if(intersects[i].object.type == 'Mesh'){
+  //         // console.log('intersections:', intersects);
+  //         this.sphereInter.visible = true;
+  //         this.sphereInter.position.copy(intersects[i].point);
+  //       }
+  //     }
+  //   }else{
+  //     this.sphereInter.visible = false;
+  //   }
+  // }
+
   // if the touch leaves the dom element, stop everything
   if (domEvent.type === 'touchleave' || domEvent.type === 'touchend') {
     if (this.dragging) {

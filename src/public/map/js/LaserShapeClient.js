@@ -55,7 +55,7 @@ ROS2D.LaserShapeClient = function (options) {
         transThres: 0.01
     });
 
-    tfClient.subscribe('odom', function (tf) {
+    tfClient.subscribe('laser_link', function (tf) {
         console.log('laserlink:', tf);
         that.currentTransform = tf;
     });

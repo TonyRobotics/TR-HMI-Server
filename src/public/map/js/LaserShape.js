@@ -24,12 +24,14 @@ ROS2D.LaserShape = function (options) {
 
     this.graphics = new createjs.Graphics();
 
-    var currRotation = this.transform ? createjs.Stage.prototype.rosQuaternionToGlobalTheta.call(this, this.transform.rotation) : 0;
-
-    var tlX = this.transform ? this.transform.translation.x : 0;
-    var tlY = this.transform ? this.transform.translation.y : 0;
-
-    // console.log('currentTF:', currRotation, tlX, tlY);掆ٶ玑
+    var pose = new ROSLIB.Pose();
+    if (this.transform) {
+        pose.applyTransform(this.transform);
+    }
+    var tlX = pose.position.x;
+    var tlY = pose.position.y;
+    var currRotation = createjs.Stage.prototype.rosQuaternionToGlobalTheta.call(this, pose.orientation);
+    console.log('transformedPose:', currRotation);
 
     var ranges = this.message.ranges;
 
@@ -38,7 +40,7 @@ ROS2D.LaserShape = function (options) {
         var r = ranges[i];
 
         if (r !== null && r >= this.message.range_min && r <= this.message.range_max) {
-            var t = currRotation + (i * this.message.angle_increment + this.message.angle_min);
+            var t = -currRotation + (i * this.message.angle_increment + this.message.angle_min);
 
             var x = r * Math.cos(t);
             var y = r * Math.sin(t);
