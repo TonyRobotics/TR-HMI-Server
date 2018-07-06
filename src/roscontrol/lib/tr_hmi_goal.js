@@ -15,7 +15,7 @@ let goalImgMsg;
  * @param rosNode 宿主node(tr_hmi_node)
  */
 function setUpCommand(rosNode) {
-    goalImgMsg = rosNode.advertise('/tr_hmi/goalImg', 'geometry_msgs/PoseStamped', {
+    goalImgMsg = rosNode.advertise('/tr_hmi/goal', 'geometry_msgs/PoseStamped', {
         queueSize: 1,
         latching: true,
         throttleMs: 0
@@ -29,7 +29,7 @@ function pubAngleSettingMsg(data, rosNode) {
     if (!rosNode) {
         rosNode = rosnodejs.nh;
         if (!rosNode) {
-            console.error('could not get node handler for /tr_hmi/goalImg');
+            console.error('could not get node handler for /tr_hmi/goal');
             return;
         }
     }
@@ -42,9 +42,9 @@ function pubAngleSettingMsg(data, rosNode) {
         data.originalPose.pose.orientation = rosMath.eularAngleToQuaternion(0, 0, data.angle / 180 * Math.PI);
         goalImgMsg.publish(data.originalPose);
 
-        console.log('publishing /tr_hmi/goalImg :');
+        console.log('publishing /tr_hmi/goal :');
     } else {
-        console.error('/tr_hmi/goalImg: invalid data:');
+        console.error('/tr_hmi/goal: invalid data:');
     }
 }
 
