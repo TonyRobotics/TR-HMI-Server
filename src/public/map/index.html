@@ -3,13 +3,15 @@
 
 <head>
     <meta charset="utf-8" />
-
+    <meta content="width=device-width, initial-scale=1.0, user-scalable=0" name="viewport" />
+    <link rel="stylesheet" href="./css/main.css" />
     <script type="text/javascript" src="js/three.min.js"></script>
     <script type="text/javascript" src="js/eventemitter2.min.js"></script>
     <script type="text/javascript" src="js/roslib.min.js"></script>
     <script type="text/javascript" src="js/ros3d.js"></script>
 
     <script type="text/javascript" type="text/javascript">
+        var globalMarkerArray;
         /**
          * Setup all visualization elements when the page is loaded.
          */
@@ -35,7 +37,7 @@
             var viewer = new ROS3D.Viewer({
                 divID: 'map',
                 width: 800,
-                height: 600,
+                height: 800,
                 cameraPose: {
                     x: 5,
                     y: 5,
@@ -87,8 +89,8 @@
                 color: 0x00ff00,
             });
 
-            //setup markerArray
-            var markerArray = new ROS3D.Pose({
+            //setup globalMarkerArray
+            globalMarkerArray = new ROS3D.Pose({
                 ros: ros,
                 topic: '/tr_hmi/goal',
                 rootObject: viewer.scene,
@@ -143,6 +145,8 @@
                     if (Math.abs(pos_x - dragstartPos.x) < minTouchslop &&
                         Math.abs(pos_y - dragstartPos.y) < minTouchslop) {
 
+                        console.log('map click...')
+
                         var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
                         vector.unproject(viewer.camera);
 
@@ -177,6 +181,8 @@
                                 }
                             }
                         }
+                    } else {
+                        removeMarkerArray();
                     }
                 }
             }
@@ -192,12 +198,40 @@
                 document.addEventListener(eventName, listeners[eventName], false);
             }, this);
         }
+
+        function removeMarkerArray() {
+            if (globalMarkerArray && globalMarkerArray.sn && globalMarkerArray.sn.children.length > 0) {
+                globalMarkerArray.sn.children[0].dispose();
+                globalMarkerArray.sn.remove(globalMarkerArray.sn.children[0]);
+            }
+        }
+
+        function resizeCanvas() {
+            var canvas = document.getElementsByTagName('canvas')[0];
+            canvas.style.width = '100%';
+            var winHeight = 0;
+            if (window.innerHeight) {
+                winHeight = window.innerHeight;
+            } else if ((document.body) && (document.body.clientHeight)) {
+                winHeight = document.body.clientHeight;
+            }
+            canvas.style.height = winHeight + 'px';
+        };
     </script>
 </head>
 
-<body onload="init()">
-    <h1>Simple Map Example</h1>
+<body onload="init();resizeCanvas();" style="margin: 0">
+    <!-- <div id="dataViewers">
+        <span id="logger" style="display: block">Testing……</span>
+        <button id="myBtn">Test Button</button>
+    </div> -->
     <div id="map"></div>
+
+    <script>
+        // document.getElementById('myBtn').onclick = function (event) {
+        //     removeMarkerArray();
+        // }
+    </script>
 </body>
 
 </html>
