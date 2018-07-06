@@ -2,425 +2,236 @@
 <html>
 
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0, user-scalable=0" name="viewport" />
-  <link rel="stylesheet" href="./css/main.css" />
-  <script src="./js/easeljs.js"></script>
-  <script src="./js/eventemitter2.min.js"></script>
-  <script src="./js/roslib.js"></script>
-  <script src="./js/ros2d.js"></script>
-  <script src="./js/transformable.js"></script>
-  <script src="./js/LaserShape.js"></script>
-  <script src="./js/LaserShapeClient.js"></script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, user-scalable=0" name="viewport" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <script type="text/javascript" src="js/three.min.js"></script>
+    <script type="text/javascript" src="js/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="js/roslib.min.js"></script>
+    <script type="text/javascript" src="js/ros3d.js"></script>
 
-  <script>
-    var viewer;
-    /**
-     * Setup all visualization elements when the page is loaded.
-     * roslaunch rosbridge_server rosbridge_websocket.launch
-     */
-    function init() {
-      // Connecting to ROS
-      // -----------------
-      var ros = new ROSLIB.Ros();
+    <script type="text/javascript" type="text/javascript">
+        var globalMarkerArray;
+        /**
+         * Setup all visualization elements when the page is loaded.
+         */
+        function init() {
+            // Connect to ROS.
+            var ros = new ROSLIB.Ros({
+                url: 'ws://192.168.5.108:9090'
+            });
 
-      // If there is an error on the backend, an 'error' emit will be emitted.
-      ros.on('error', function (error) {
-        console.log(error);
-      });
+            ros.on('connection', function () {
+                console.log('ros connected.')
+            });
 
-      // Find out exactly when we made a connection.
-      ros.on('connection', function () {
-        console.log('Connection made!');
-      });
+            ros.on('close', function () {
+                console.log('ros connection closed.')
+            });
 
-      ros.on('close', function () {
-        console.log('Connection closed.');
-      });
+            ros.on('error', function (err) {
+                console.error('ros error:', err);
+            })
 
-      // Create a connection to the rosbridge WebSocket server.
-      // ros.connect('ws://192.168.2.91:9090');
-      // ros.connect('ws://192.168.5.108:9090');
-      ros.connect(`ws://${window.location.hostname}:9090`);
+            // Create the main viewer.
+            var viewer = new ROS3D.Viewer({
+                divID: 'map',
+                width: 800,
+                height: 800,
+                cameraPose: {
+                    x: 5,
+                    y: 5,
+                    z: 10
+                }
+            });
 
-      // Publishing a Topic
-      // ------------------
+            // Setup a client to listen to TFs.
+            var tfClient = new ROSLIB.TFClient({
+                ros: ros,
+                angularThres: 0.01,
+                transThres: 0.01,
+                fixedFrame: 'map'
+            });
 
-      // First, we create a Topic object with details of the topic's name and message type.
-      // var cmdVel = new ROSLIB.Topic({
-      //   ros: ros,
-      //   name: '/cmd_vel',
-      //   messageType: 'geometry_msgs/Twist'
-      // });
+            // Setup the map client.
+            var gridClient = new ROS3D.OccupancyGridClient({
+                ros: ros,
+                tfClient: tfClient,
+                rootObject: viewer.scene
+            });
 
-      // Then we create the payload to be published. The object we pass in to ros.Message matches the
-      // fields defined in the geometry_msgs/Twist.msg definition.
-      // var twist = new ROSLIB.Message({
-      //   linear: {
-      //     x: 0.1,
-      //     y: 0.2,
-      //     z: 0.3
-      //   },
-      //   angular: {
-      //     x: -0.1,
-      //     y: -0.2,
-      //     z: -0.3
-      //   }
-      // });
+            //setup the laserScan
+            var laserScan = new ROS3D.LaserScan({
+                ros: ros,
+                tfClient: tfClient,
+                rootObject: viewer.scene,
+                material: {
+                    color: 'red',
+                    size: '0.1'
+                }
+            });
 
-      // And finally, publish.
-      // cmdVel.publish(twist);
+            //setup the odom
+            var odom = new ROS3D.Odometry({
+                ros: ros,
+                topic: '/odom',
+                tfClient: tfClient,
+                rootObject: viewer.scene,
+                keep: 2,
+            });
 
+            //setup the nav path
+            var path = new ROS3D.Path({
+                ros: ros,
+                topic: '/move_base/TrajectoryPlannerROS/global_plan',
+                tfClient: tfClient,
+                rootObject: viewer.scene,
+                color: 0x00ff00,
+            });
 
-      // Create the polygon
-      var polygon = new ROS2D.PolygonMarker({
-        pointCallBack: pointCallBack,
-        lineCallBack: lineCallBack,
-        fillColor: createjs.Graphics.getRGB(0, 0, 0, 0),
-        lineSize: 0.0001,
-        pointSize: 0.1
-      });
+            //setup globalMarkerArray
+            globalMarkerArray = new ROS3D.Pose({
+                ros: ros,
+                topic: '/tr_hmi/goal',
+                rootObject: viewer.scene,
+                tfClient: tfClient,
+                color: 0x66ffcc,
+            });
 
-      // Create the plan polygon
-      var polygonPlan = new ROS2D.PolygonMarker({
-        lineColor: createjs.Graphics.getRGB(255, 255, 255, 1),
-        pointColor: createjs.Graphics.getRGB(0, 255, 0, 1),
-        fillColor: createjs.Graphics.getRGB(0, 0, 0, 0),
-        pointCallBack: pointCallBack,
-        lineCallBack: lineCallBack,
-        lineSize: 0.001,
-        pointSize: 0.01
-      });
+            var goalImg = new ROSLIB.Topic({
+                ros: ros,
+                name: '/tr_hmi/goal',
+                messageType: 'geometry_msgs/PoseStamped'
+            });
 
-      // Create the goal polygon
-      var polygonGoal = new ROS2D.PolygonMarker({
-        lineColor: createjs.Graphics.getRGB(255, 255, 255, 1),
-        pointColor: createjs.Graphics.getRGB(0, 255, 255, 1),
-        fillColor: createjs.Graphics.getRGB(0, 0, 0, 0),
-        pointCallBack: pointCallBack,
-        lineCallBack: lineCallBack,
-        lineSize: 0.001,
-        pointSize: 0.1
-      });
+            var dragstartPos;
+            var processDomEvent = function (domEvent) {
+                var minTouchslop;
 
-      //Subscribing to a Topic
-      //----------------------
+                // compute normalized device coords and 3D mouse ray
+                var target = domEvent.target;
+                var rect = target.getBoundingClientRect();
+                var pos_x, pos_y;
 
-      // Like when publishing a topic, we first create a Topic object with details of the topic's name
-      // and message type. Note that we can call publish or subscribe on the same topic object.
-      var odom = new ROSLIB.Topic({
-        ros: ros,
-        name: '/odom',
-        messageType: 'nav_msgs/Odometry'
-      });
+                if (domEvent.type.indexOf('touch') !== -1) {
+                    minTouchslop = 10;
+                    pos_x = 0;
+                    pos_y = 0;
+                    for (var i = 0; i < domEvent.changedTouches.length; ++i) {
+                        pos_x += domEvent.changedTouches[i].clientX;
+                        pos_y += domEvent.changedTouches[i].clientY;
+                    }
+                    pos_x /= domEvent.changedTouches.length;
+                    pos_y /= domEvent.changedTouches.length;
+                } else {
+                    minTouchslop = 0.01;
+                    pos_x = domEvent.clientX;
+                    pos_y = domEvent.clientY;
+                }
 
-      // Then we add a callback to be called every time a message is published on this topic.
-      odom.subscribe(function (message) {
-        // console.log('Received message on ' + odom.name + ': ');
-        // console.log(message);
-        //console.log(robotPosTmp);
-        //polygon.remPoint(robotPosTmp);
-        // change the angle
-        //var rotation = createjs.Stage.prototype.rosQuaternionToGlobalTheta(message.orientation);
+                var left = pos_x - rect.left - target.clientLeft + target.scrollLeft;
+                var top = pos_y - rect.top - target.clientTop + target.scrollTop;
+                var deviceX = left / target.clientWidth * 2 - 1;
+                var deviceY = -top / target.clientHeight * 2 + 1;
 
-        var robotPos = new ROSLIB.Vector3({
-          x: message.pose.pose.position.x,
-          y: message.pose.pose.position.y,
-          z: message.pose.pose.position.z
-        });
-        polygon.pointContainer.removeAllChildren();
-        polygon.addPoint(robotPos);
-        updateRobotPosition(message.pose.pose.position, message.pose.pose.orientation);
-        // If desired, we can unsubscribe from the topic as well.
-        //odom.unsubscribe();
-      });
+                if (domEvent.type === 'touchstart' || domEvent.type === 'mousedown') {
+                    dragstartPos = {
+                        x: pos_x,
+                        y: pos_y
+                    };
+                }
 
-      var globalPlan = new ROSLIB.Topic({
-        ros: ros,
-        name: '/move_base/TrajectoryPlannerROS/global_plan',
-        messageType: 'nav_msgs/Path'
-      });
+                if (domEvent.type === 'touchend' || domEvent.type === 'mouseup') {
+                    if (Math.abs(pos_x - dragstartPos.x) < minTouchslop &&
+                        Math.abs(pos_y - dragstartPos.y) < minTouchslop) {
 
-      var goal = new ROSLIB.Topic({
-        ros: ros,
-        name: '/tr_hmi/goal',
-        messageType: 'geometry_msgs/PoseStamped'
-      });
+                        console.log('map click...')
 
-      var goalImg = new ROSLIB.Topic({
-        ros: ros,
-        name: '/tr_hmi/goalImg',
-        messageType: 'geometry_msgs/PoseStamped'
-      });
+                        var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
+                        vector.unproject(viewer.camera);
 
-      var v1 = new ROSLIB.Vector3({
-        x: 0,
-        y: 0,
-        z: 0
-      });
+                        var mouseRaycaster = new THREE.Raycaster(
+                            viewer.camera.position.clone(),
+                            vector.sub(viewer.camera.position).normalize());
+                        mouseRaycaster.linePrecision = 0.001;
+                        var mouseRay = mouseRaycaster.ray;
 
-      var q1 = new ROSLIB.Quaternion({
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-        w: 1.0
-      });
+                        var intersects = [];
+                        intersects = mouseRaycaster.intersectObject(viewer.scene, true);
+                        if (intersects.length > 0) {
+                            for (var i = 0; i < intersects.length; i++) {
+                                if (intersects[i].object.type == 'Mesh') {
 
-      var p = new ROSLIB.Pose({
-        position: v1,
-        orientation: q1
-      });
+                                    var poseStamped = {
+                                        header: {
+                                            frame_id: "map"
+                                        },
+                                        pose: {
+                                            position: intersects[i].point,
+                                            orientation: {
+                                                x: 0,
+                                                y: 0,
+                                                z: 0,
+                                                w: 1
+                                            }
+                                        }
+                                    };
 
-      // Then we add a callback to be called every time a message is published on this topic.
-      globalPlan.subscribe(function (message) {
-        //console.log('Received message on ' + globalPlan.name + ': ');
-        //console.log(message.poses);
-        //polygonPlan.lineContainer.removeAllChildren();
-        polygonPlan.pointContainer.removeAllChildren();
+                                    goalImg.publish(poseStamped);
+                                }
+                            }
+                        }
+                    } else {
+                        removeMarkerArray();
+                    }
+                }
+            }
 
-        for (pose in message.poses) {
-          //console.log(message.poses[pose].pose.orientation);
-          var tmp = message.poses[pose];
-          polygonPlan.addPoint(message.poses[pose].pose.position);
+            var eventNames = ['mousedown', 'mouseout', 'mouseup', 'mousemove',
+                'touchstart', 'touchend', 'touchleave', 'touchcancel', 'touchmove'
+            ];
+            listeners = {};
+
+            // add event listeners for the associated mouse events
+            eventNames.forEach(function (eventName) {
+                listeners[eventName] = processDomEvent.bind(this);
+                document.addEventListener(eventName, listeners[eventName], false);
+            }, this);
         }
 
-        // If desired, we can unsubscribe from the topic as well.
-        //odom.unsubscribe();
-      });
-
-      goalImg.subscribe(function (message) {
-        // console.log('----goalImg: ', message);
-        updateRobotGoalPosition(message.pose.position, message.pose.orientation);
-      });
-
-      // Create the main viewer.
-      viewer = new ROS2D.Viewer({
-        divID: 'map',
-        width: 1024,
-        height: 1024
-      });
-
-      // Setup the map client.
-      var gridClient = new ROS2D.OccupancyGridClient({
-        ros: ros,
-        rootObject: viewer.scene,
-        // Use this property in case of continuous updates			
-        continuous: true
-      });
-
-      createjs.Touch.enable(viewer.scene);
-      // createjs.Touch.disable(state); 
-
-      // Scale the canvas to fit to the map
-      gridClient.on('change', function () {
-        viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
-        viewer.shift(gridClient.currentGrid.pose.position.x, gridClient.currentGrid.pose.position.y);
-      });
-
-      // marker for the robot
-      var robotMarker = null;
-      var use_image = "img/arrow_64.png";
-      robotMarker = new ROS2D.NavigationImage({
-        size: 0.1,
-        image: use_image,
-        pulse: true
-      });
-      // wait for a pose to come in first
-      robotMarker.visible = false;
-      viewer.scene.addChild(robotMarker);
-
-      // marker for the goal
-      var goalMarker = null;
-      var goal_image = "img/arrow_green.png";
-      goalMarker = new ROS2D.NavigationImage({
-        size: 0.1,
-        image: goal_image,
-        pulse: true
-      });
-      goalMarker.visible = false;
-      viewer.scene.addChild(goalMarker);
-
-      var initScaleSet = false;
-      var updateRobotPosition = function (pose, orientation) {
-        // update the robots position on the map
-        robotMarker.x = pose.x;
-        robotMarker.y = -pose.y;
-        if (!initScaleSet) {
-          robotMarker.scaleX = 0.01;
-          robotMarker.scaleY = 0.01;
-          initScaleSet = true;
+        function removeMarkerArray() {
+            if (globalMarkerArray && globalMarkerArray.sn && globalMarkerArray.sn.children.length > 0) {
+                globalMarkerArray.sn.children[0].dispose();
+                globalMarkerArray.sn.remove(globalMarkerArray.sn.children[0]);
+            }
         }
-        // change the angle
-        robotMarker.rotation = viewer.scene.rosQuaternionToGlobalTheta(orientation);
-        // Set visible
-        robotMarker.visible = true;
-      };
 
-      var initScaleSetImg = false;
-      var updateRobotGoalPosition = function (pose, orientation) {
-        // update the robots position on the map
-        goalMarker.x = pose.x;
-        goalMarker.y = -pose.y;
-        if (!initScaleSetImg) {
-          goalMarker.scaleX = 0.01;
-          goalMarker.scaleY = 0.01;
-          initScaleSetImg = true;
-        }
-        // change the angle
-        goalMarker.rotation = viewer.scene.rosQuaternionToGlobalTheta(orientation);
-        // Set visible
-        goalMarker.visible = true;
-      };
-
-
-
-      // Callback functions when there is mouse interaction with the polygon
-      var clickedPolygon = false;
-      var selectedPointIndex = null;
-
-      var pointCallBack = function (type, event, index) {
-        if (type === 'mousedown') {
-          if (event.nativeEvent.shiftKey === true) {
-            polygon.remPoint(index);
-          } else {
-            selectedPointIndex = index;
-          }
-        }
-        clickedPolygon = true;
-      };
-
-      var lineCallBack = function (type, event, index) {
-        if (type === 'mousedown') {
-          if (event.nativeEvent.ctrlKey === true) {
-            //polygon.splitLine(index);
-          }
-        }
-        clickedPolygon = true;
-      }
-
-      // Add the polygon to the viewer
-      viewer.scene.addChild(polygon);
-      viewer.scene.addChild(polygonPlan);
-      //viewer.scene.addChild(polygonGoal);
-
-      var transformable = new Transformable(viewer.scene);
-
-      let logger = document.getElementById('logger');
-      // transformable.on('update', (data) => {
-      // logger.innerText = 'Update : ' + data.active;
-      // });
-
-      let touchable = getParameterByName('touchable');
-      if (touchable == 1) {
-        //实现舞台多指触控变换
-        let zoomView = new ROS2D.ZoomView({
-          rootObject: viewer.scene,
-          minScale: 20
-        });
-
-        transformable.on('scale', (data) => {
-          zoomView.startZoom(data.start.x, data.start.y);
-          zoomView.zoom(viewer.scene.scaleX / zoomView.startScale.x * data.scale);
-        });
-
-        transformable.on('move', (diff) => {
-          viewer.scene.x += (diff.x);
-          viewer.scene.y += (diff.y);
-        });
-      }
-
-      // transformable.on('complete', (event) => {
-      //   logger.innerText = 'complete : ' + event.active;
-      // });
-
-      var goalPosTmp = null;
-      transformable.on('click', (event) => {
-        // Add point when not clicked on the polygon
-        if (selectedPointIndex !== null) {
-          selectedPointIndex = null;
-        } else if (viewer.scene.mouseInBounds === true && clickedPolygon === false) {
-          // if (goalPosTmp != null) {
-          //   polygonGoal.remPoint(goalPosTmp);
-          // }
-          goalPosTmp = viewer.scene.globalToRos(event.stageX, event.stageY);
-          //polygonGoal.addPoint(goalPosTmp);
-
-          var goalQuaTmp = new ROSLIB.Quaternion({
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-            w: 1.0
-          });
-          updateRobotGoalPosition(goalPosTmp, goalQuaTmp);
-
-          p.position.x = goalPosTmp.x;
-          p.position.y = goalPosTmp.y;
-          var poseStamped = {
-            header: {
-              //   seq: 1,
-              //   stamp: {
-              //     secs: 0,
-              //     nsecs: 0
-              //   },
-              frame_id: "map"
-            },
-            pose: p
-          };
-          goal.publish(poseStamped);
-        }
-        console.log('PoseStamped: ', poseStamped);
-        clickedPolygon = false;
-      });
-
-      var laserClient = new ROS2D.LaserShapeClient({
-        ros: ros,
-        rootObject: viewer.scene,
-      });
-    }
-
-    function setMapHeight() {
-      var canvas = document.getElementsByTagName('canvas')[0];
-
-      if (getParameterByName('touchable') == 1) {
-        canvas.style.width = '100%';
-      } else {
-        var winHeight = 0;
-        if (window.innerHeight) {
-          winHeight = window.innerHeight;
-        } else if ((document.body) && (document.body.clientHeight)) {
-          winHeight = document.body.clientHeight;
-        }
-        canvas.style.height = winHeight + 'px';
-      }
-    };
-
-    function getParameterByName(name, url) {
-      if (!url) {
-        url = window.location.href;
-      }
-
-      name = name.replace(/[\[\]]/g, "\\$&");
-      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-
-      if (!results) {
-        return null;
-      }
-
-      if (!results[2]) {
-        return '';
-      }
-
-      return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
-  </script>
+        function resizeCanvas() {
+            var canvas = document.getElementsByTagName('canvas')[0];
+            canvas.style.width = '100%';
+            var winHeight = 0;
+            if (window.innerHeight) {
+                winHeight = window.innerHeight;
+            } else if ((document.body) && (document.body.clientHeight)) {
+                winHeight = document.body.clientHeight;
+            }
+            canvas.style.height = winHeight + 'px';
+        };
+    </script>
 </head>
 
-<body onload="init();setMapHeight();" style="margin:0px;">
-  <div id="dataViewers">
-    <span id="logger" style="display: none">Testing……</span>
-  </div>
-  <div id="map"></div>
+<body onload="init();resizeCanvas();" style="margin: 0">
+    <!-- <div id="dataViewers">
+        <span id="logger" style="display: block">Testing……</span>
+        <button id="myBtn">Test Button</button>
+    </div> -->
+    <div id="map"></div>
+
+    <script>
+        // document.getElementById('myBtn').onclick = function (event) {
+        //     removeMarkerArray();
+        // }
+    </script>
 </body>
 
 </html>
