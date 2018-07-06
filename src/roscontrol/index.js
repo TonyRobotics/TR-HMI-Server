@@ -15,7 +15,7 @@ const initialPose = require('./lib/initialPose');
 const cmd_vel = require('./lib/cmd_vel');
 const moveBaseSimpleGoal = require('./lib/move_base_simple_goal');
 const runLaunch = require('./lib/runlaunch');
-const tr_hmi_goalImg = require('./lib/tr_hmi_goalImg');
+const tr_hmi_goal = require('./lib/tr_hmi_goal');
 const jsonUtil = require('../utils/jsonFileUtil');
 const path = require('path');
 const db = require('../utils/singletonDB').getDB();
@@ -169,6 +169,6 @@ module.exports = {
     'pubMoveBaseSimpleGoalMsg': pubMoveGoalMsg,
     'runRosLaunch': runLaunch.runRosLaunch,
     'stopRosLaunch': runLaunch.stopRosLaunch,
-    'pubAngleSettingMsg': tr_hmi_goalImg.pubAngleSettingMsg,
+    'pubAngleSettingMsg': tr_hmi_goal.pubAngleSettingMsg,
     'stopMapServer': stopMapServer,
 }

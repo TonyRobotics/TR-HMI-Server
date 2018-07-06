@@ -18,7 +18,6 @@
         function init() {
             // Connect to ROS.
             var ros = new ROSLIB.Ros({
-                url: 'ws://192.168.5.108:9090'
             });
 
             ros.on('connection', function () {
@@ -32,6 +31,8 @@
             ros.on('error', function (err) {
                 console.error('ros error:', err);
             })
+
+            ros.connect(`ws://${window.location.hostname}:9090`);
 
             // Create the main viewer.
             var viewer = new ROS3D.Viewer({
