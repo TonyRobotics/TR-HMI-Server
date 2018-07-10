@@ -9,9 +9,11 @@
     <script type="text/javascript" src="js/eventemitter2.min.js"></script>
     <script type="text/javascript" src="js/roslib.min.js"></script>
     <script type="text/javascript" src="js/ros3d.js"></script>
+    <script type="text/javascript" src="js/stats.min.js"></script>
 
     <script type="text/javascript" type="text/javascript">
         var globalMarkerArray;
+        var stats;
         /**
          * Setup all visualization elements when the page is loaded.
          */
@@ -32,7 +34,11 @@
                 console.error('ros error:', err);
             })
 
-            ros.connect(`ws://${window.location.hostname}:9090`);
+            ros.connect('ws://192.168.5.108:9090')
+            // ros.connect(`ws://${window.location.hostname}:9090`);
+
+            stats = new Stats();
+            document.getElementById("container").appendChild(stats.dom);
 
             // Create the main viewer.
             var viewer = new ROS3D.Viewer({
@@ -40,10 +46,11 @@
                 width: 800,
                 height: 800,
                 cameraPose: {
-                    x: 5,
-                    y: 5,
+                    x: 0,
+                    y: 0,
                     z: 10
-                }
+                },
+                stats: stats,
             });
 
             // Setup a client to listen to TFs.
@@ -59,7 +66,7 @@
                 ros: ros,
                 tfClient: tfClient,
                 rootObject: viewer.scene,
-                continuous:true,
+                continuous: true,
             });
 
             //setup the laserScan
@@ -228,6 +235,7 @@
         <button id="myBtn">Test Button</button>
     </div> -->
     <div id="map"></div>
+    <div id="container"></div>
 
     <script>
         // document.getElementById('myBtn').onclick = function (event) {

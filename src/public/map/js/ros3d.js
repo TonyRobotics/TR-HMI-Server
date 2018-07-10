@@ -5141,6 +5141,7 @@ ROS3D.Viewer = function (options) {
     z: 3
   };
   var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
+  this.stats = options.stats;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -5217,6 +5218,10 @@ ROS3D.Viewer.prototype.draw = function () {
 
   // update the controls
   this.cameraControls.update();
+
+  if(this.stats){
+    this.stats.update();
+  }
 
   // put light to the top-left of the camera
   this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
