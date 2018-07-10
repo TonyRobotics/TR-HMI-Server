@@ -58,7 +58,8 @@
             var gridClient = new ROS3D.OccupancyGridClient({
                 ros: ros,
                 tfClient: tfClient,
-                rootObject: viewer.scene
+                rootObject: viewer.scene,
+                continuous:true,
             });
 
             //setup the laserScan
