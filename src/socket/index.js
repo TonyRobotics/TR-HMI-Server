@@ -34,6 +34,11 @@ function registerRouters(io, callback) {
 
         client.on('/global/map/goal/angle_setting', controllers.onSettingAngle);
 
+        client.on('reading', (req, fn) => {
+            console.log('socket reading ==>:',req);
+            io.emit('reading',req);
+        })
+
         if (callback) {
             callback(client);
         }

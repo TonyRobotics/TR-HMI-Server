@@ -13,11 +13,21 @@
         </br>
         <textarea id="socketReq" cols="30" rows="10"></textarea>
         </br>
-        <button id="sendRaw">Send Raw Socket</button>
+        <button id="sendJSON">Send JSON</button>
+        <button id="sendText">Send Plain Text</button>
+
+        </br>
+    </div>
+
+    <div style="display: block">
+        <input id="subTopic" />
+        </br>
+        <button id="sub">Subscribe</button>
+        </br>
     </div>
 
     <script>
-        let socket = io();
+        let socket = io('192.168.5.103:3000');
 
         socket.on('connect', () => {
             console.log('client connected');
@@ -33,13 +43,33 @@
             console.log('map click:', data);
         });
 
-        document.getElementById('sendRaw').onclick = function () {
+        document.getElementById('sendJSON').onclick = function () {
             let topic = document.getElementById('socketTopic').value;
             let req = document.getElementById('socketReq').value;
             socket.emit(topic, req || '' ? JSON.parse(req) : {}, (data) => {
                 console.log(topic + ' ==>:', data);
                 alert(JSON.stringify(data));
             })
+        }
+
+        document.getElementById('sendText').onclick = function () {
+            let topic = document.getElementById('socketTopic').value;
+            let req = document.getElementById('socketReq').value;
+            socket.emit(topic, req || '', (data) => {
+                console.log(topic + ' ==>:', data);
+                alert(data);
+            })
+            console.log('message [' + req + '] send to topic ' + topic);
+        }
+
+        document.getElementById('sub').onclick = function () {
+            let topic = document.getElementById('subTopic').value;
+            if (topic) {
+                socket.on(topic, (data) => {
+                    console.log('sub topic data from ' + topic + ' ==>: ', data);
+                })
+                console.log('topic ' + topic + ' subscribed.');
+            }
         }
     </script>
 </body>
