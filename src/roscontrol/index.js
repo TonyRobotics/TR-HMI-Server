@@ -46,7 +46,6 @@ function startHMIBridgeNode(callback) {
 }
 
 /**
- * TODO: 根据不同底盘型号配置对应 launch 文件
  * 切换 tr 工作模式
  * @param mode TR 底盘现有三种工作模式, 
  *              `MODE.CONTROL`（遥控模式，默认），
