@@ -38,13 +38,13 @@ function pubAngleSettingMsg(data, rosNode) {
     }
 
     //handle pose data
-    if (data && data.originalPose && data.angle) {
+    if (data && data.originalPose && data.originalPose.pose && data.angle) {
         data.originalPose.pose.orientation = rosMath.eularAngleToQuaternion(0, 0, data.angle / 180 * Math.PI);
         goalImgMsg.publish(data.originalPose);
 
-        console.log('publishing /tr_hmi/goal :');
+        // console.log('publishing /tr_hmi/goal :');
     } else {
-        console.error('/tr_hmi/goal: invalid data:');
+        console.error('/tr_hmi/goal: invalid data:',data);
     }
 }
 
