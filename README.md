@@ -1,4 +1,4 @@
-# TR HMI Service [中文](doc/zh_CN/README.md)
+# TR HMI Service [中文文档](doc/zh_CN/README.md)
 
 TonyRobotics common human machine interface services in NodeJS.
 
@@ -10,5 +10,5 @@ TonyRobotics common human machine interface services in NodeJS.
 
 ## Static Page
 
-1. Html Ros2D Map Viewer: `http://192.168.5.108:3000/map`
-2. ~~TR HMI Mobile App Download Page: `http://192.168.5.108:3000/app`~~
+1. Html Ros3D Map Viewer: `http://<YOUR ROS IP>:3000/map`
+2. Html Ros2D Map Viewer (no laser scan): `http://<YOUR ROS IP>:3000/map/index2d.html`

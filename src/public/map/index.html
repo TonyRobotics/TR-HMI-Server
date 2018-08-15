@@ -34,8 +34,8 @@
                 console.error('ros error:', err);
             })
 
-            ros.connect('ws://192.168.5.108:9090')
-            // ros.connect(`ws://${window.location.hostname}:9090`);
+            // ros.connect('ws://192.168.5.108:9090')
+            ros.connect(`ws://${window.location.hostname}:9090`);
 
             stats = new Stats();
             document.getElementById("container").appendChild(stats.dom);
@@ -107,6 +107,7 @@
                 color: 0x66ffcc,
             });
 
+            //setup for map estimate and nav goal touch events
             var goalImg = new ROSLIB.Topic({
                 ros: ros,
                 name: '/tr_hmi/goal',
