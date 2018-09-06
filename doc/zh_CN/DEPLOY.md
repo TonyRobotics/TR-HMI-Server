@@ -5,6 +5,12 @@
 1. `NodeJS` ： 安装参考官方手册. 版本建议 `8.x` 以上；
 2. `cnpm` : 国内 NodeJS 仓库镜像源，可加快访问速度，使用参考 [cnpm](https://npm.taobao.org). 安装方式：`sudo npm install -g cnpm --registry=https://registry.npm.taobao.org`
 
+## 必要的 ros 包
+
+1. `ros-kinetic-slam-gmapping`
+2. `ros-kinetic-tf2-web-republisher`
+3. `ros-kinetic-map-server`
+
 ## 代码部署
 
 1. 创建或进入代码存放路径：`cd ~/tr_hmi` 或 `mkdir ~/tr_hmi && cd ~/tr_hmi`;
