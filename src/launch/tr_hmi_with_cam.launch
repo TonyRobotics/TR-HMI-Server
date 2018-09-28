@@ -4,4 +4,7 @@
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"></include>
     <!-- for web laser -->
     <node name="tf2_web_republisher" pkg="tf2_web_republisher" type="tf2_web_republisher" />
+    <!-- for web camera -->
+    <node name="web_vdieo_server" pkg="web_video_server" type="web_video_server"/>
+    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node"/>
 </launch>

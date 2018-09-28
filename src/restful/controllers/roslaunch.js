@@ -20,6 +20,9 @@ let fn_startROSLaunch = async (ctx, next) => {
             case 'tr_hmi':
                 launchFile = path.join(__dirname, '../../launch/tr_hmi.launch');
                 break;
+            case 'tr_hmi_with_cam':
+                launchFile = path.join(__dirname, '../../launch/tr_hmi_with_cam.launch');
+                break;
             default:
                 ctx.response.body = {
                     message: `failed: requested preset ${preset} not supported!`

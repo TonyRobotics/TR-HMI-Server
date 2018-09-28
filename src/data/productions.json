@@ -3,6 +3,7 @@
         "name": "abel05",
         "productName": "ABEL 05",
         "package": "abel05_navigation",
+        "cameraEnabled": false,
         "launchFiles": {
             "mapping": "mapping.launch",
             "navigation": "navigation.launch",
@@ -13,6 +14,7 @@
         "name": "abel10",
         "productName": "ABEL 10",
         "package": "abel10_navigation",
+        "cameraEnabled": false,
         "launchFiles": {
             "mapping": "mapping.launch",
             "navigation": "navigation.launch",
@@ -23,6 +25,7 @@
         "name": "xiaobai",
         "productName": "XiaoBai",
         "package": "xiaobai_navigation",
+        "cameraEnabled": false,
         "launchFiles": {
             "mapping": "mapping.launch",
             "navigation": "navigation.launch",
@@ -33,6 +36,7 @@
         "name": "trtank",
         "productName": "TR-Tank",
         "package": "tank_driver",
+        "cameraEnabled": false,
         "launchFiles": {
             "mapping": "mapping.launch",
             "navigation": "navigation.launch",
@@ -43,6 +47,18 @@
         "name": "venus05",
         "productName": "VENUS 05",
         "package": "abel05_navigation",
+        "cameraEnabled": false,
+        "launchFiles": {
+            "mapping": "mapping.launch",
+            "navigation": "navigation.launch",
+            "control": "controller.launch"
+        }
+    },
+    {
+        "name": "venus05cam",
+        "productName": "VENUS 05 (Cam)",
+        "package": "abel05_navigation",
+        "cameraEnabled": true,
         "launchFiles": {
             "mapping": "mapping.launch",
             "navigation": "navigation.launch",
