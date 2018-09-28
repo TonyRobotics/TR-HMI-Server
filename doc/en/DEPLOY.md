@@ -5,6 +5,14 @@
 1. `NodeJS　^v8.0.0` ：Get help from [official manual](https://nodejs.org/en/);
 2. ~~`cnpm ^v5.6.0` : npm mirror site in China, see [cnpm](https://npm.taobao.org).~~
 
+
+## Required ROS package
+
+1. `ros-kinetic-slam-gmapping`
+2. `ros-kinetic-tf2-web-republisher`
+3. `ros-kinetic-map-server`
+4. `ros-kinetic-web-video-server`
+
 ## Install
 
 1. clone from official repo: `git clone git@github.com:TonyRobotics/TR-HMI-Server.git`;

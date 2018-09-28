@@ -10,6 +10,7 @@
 1. `ros-kinetic-slam-gmapping`
 2. `ros-kinetic-tf2-web-republisher`
 3. `ros-kinetic-map-server`
+4. `ros-kinetic-web-video-server`
 
 ## 代码部署
 
@@ -36,7 +37,7 @@
 
 * 参数：`--product=<name>`
 * 说明: 启动时指定当前服务所在底盘的产品型号，默认缺省型号为 `abel05`,所有可用产品型号配置在 `src/data/productions.json`, 如需更改或新增产品配置，比如更新某个 launch 文件名称等，请直接修改此文件。修改之后需重启服务并添加 `--reset` 参数以使之生效；
-* 取值：目前支持的产品有： `abel05`,`abel10`,`xiaobai`,`trtank`.
+* 取值：目前支持的产品有： `abel05`,`abel10`,`xiaobai`,`trtank`，`venus05`,`venus05cam`.
 
 ### 二、重置所有配置
 
