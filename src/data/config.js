@@ -104,7 +104,7 @@ let configProducts = async () => {
             console.log(`[√] apply configuration for prodution ${v}`);
         } else {
             console.log(`[!] No production args specified! we\'ll use "${db.get('product').value()}" as default! ` +
-                'To specify your product, please apply "production=<your product>" into running args.');
+                'To specify your product, please apply "--product=<your product>" into running args.');
         }
     });
 }

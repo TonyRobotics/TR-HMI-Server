@@ -5,6 +5,13 @@
 1. `NodeJS` ： 安装参考官方手册. 版本建议 `8.x` 以上；
 2. `cnpm` : 国内 NodeJS 仓库镜像源，可加快访问速度，使用参考 [cnpm](https://npm.taobao.org). 安装方式：`sudo npm install -g cnpm --registry=https://registry.npm.taobao.org`
 
+## 必要的 ros 包
+
+1. `ros-kinetic-slam-gmapping`
+2. `ros-kinetic-tf2-web-republisher`
+3. `ros-kinetic-map-server`
+4. `ros-kinetic-web-video-server`
+
 ## 代码部署
 
 1. 创建或进入代码存放路径：`cd ~/tr_hmi` 或 `mkdir ~/tr_hmi && cd ~/tr_hmi`;
@@ -30,7 +37,7 @@
 
 * 参数：`--product=<name>`
 * 说明: 启动时指定当前服务所在底盘的产品型号，默认缺省型号为 `abel05`,所有可用产品型号配置在 `src/data/productions.json`, 如需更改或新增产品配置，比如更新某个 launch 文件名称等，请直接修改此文件。修改之后需重启服务并添加 `--reset` 参数以使之生效；
-* 取值：目前支持的产品有： `abel05`,`abel10`,`xiaobai`,`trtank`.
+* 取值：目前支持的产品有： `abel05`,`abel10`,`xiaobai`,`trtank`，`venus05`,`venus05cam`.
 
 ### 二、重置所有配置
 
