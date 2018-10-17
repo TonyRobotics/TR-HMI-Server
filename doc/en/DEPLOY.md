@@ -12,6 +12,7 @@
 2. `ros-kinetic-tf2-web-republisher`
 3. `ros-kinetic-map-server`
 4. `ros-kinetic-web-video-server`
+5. `ros-kinetic-usb-cam`
 
 ## Install
 
