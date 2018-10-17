@@ -73,3 +73,15 @@
 1. 默认地图存放位置：　`~/maps/`;
 2. 自带一张默认地图, 首次启动项目时会自动配置到默认地图存储路径下：　`src/data/default.yaml<pgm>` --> `~/maps/default.yaml<pgm>`;
 3. 默认　launch 文件：　`src/launch/tr_hmi.launch`, 用于启动必要的　ros node 和　服务;
+
+## 代码更新
+
+> 更新底盘服务代码直接从 git 仓库拉取最新即可，需要底盘连接网络。
+
+```shell
+cd tr_hmi/TR_HMI_Server
+
+git pull
+
+pm2 reload all
+```
