@@ -31,7 +31,11 @@
 
 启动参数是启动 HMI 服务时指定的运行参数，示例：
 
-`pm2 start src/index.js --product=abel05`
+`node src/index.js --product=abel05`
+
+或者
+
+`pm2 start src/index.js -x -- --product=abel05`
 
 ### 一、指定产品型号
 

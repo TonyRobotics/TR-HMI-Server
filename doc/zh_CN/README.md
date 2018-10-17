@@ -12,3 +12,7 @@ TR 通用人机交互界面 ROS 层服务端
 
 1. ROS 2D 地图页面: `http://192.168.5.108:3000/map`
 2. ~~内置 APP 下载页面: `http://192.168.5.108:3000/app`~~
+
+## 开发文档
+
+[Develop Guide](DEVELOP_GUIDE.md)

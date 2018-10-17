@@ -26,3 +26,15 @@ All the configurations mananged by `src/data/config.js`;
 1. Default folder for ROS maps ：　`~/maps/`;
 2. One packaged map file, will copied to the default maps folder automatically when first run：　`src/data/default.yaml<pgm>` --> `~/maps/default.yaml<pgm>`;
 3. Default　launch file：　`src/launch/tr_hmi.launch`, used for starting some essential ros nodes and services.
+
+## Run
+
+`node src/index.js --product=abel05`
+
+Or
+
+`pm2 start src/index.js -x -- --product=abel05`
+
+Products information is defined in `src/data/productions.json`.
+
+If you want to change the product that has set before, you should also pass the `--reset` argument to node to reset the configuration file.
