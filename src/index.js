@@ -12,9 +12,6 @@ const debounce = require('lodash.debounce');
 //default server port
 const PORT = 3000;
 
-//socket client instance
-let socketClient;
-
 //check and config
 require('./data/config').checkAndConfig();
 
@@ -27,18 +24,18 @@ servSocket(io);
 // rosControl.toggleRosLaunchMode(rosControl.MODE.CONTROL);
 
 //running tr_hmi_node
-rosControl.startHMIBridgeNode((rosnode) => {
+rosControl.startHMIBridgeNode(rosnode => {
     console.log('tr_hmi_node started!');
 });
 
 //subscribe map click to set goal
-rosControl.subscribeMapGoal(debounce((msg) => {
+rosControl.subscribeMapGoal(debounce(msg => {
     console.log('broadcasting click...');
     io.sockets.emit('/global/map/goal/click', msg);
 }, 600));
 
 //retransmission realtime odometry message
-rosControl.subscribeOdom((msg) => {
+rosControl.subscribeOdom(msg => {
     io.sockets.emit('/global/map/position', msg);
 });
 
