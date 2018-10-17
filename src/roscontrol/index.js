@@ -124,7 +124,7 @@ function saveMap(fullName) {
  * 监听地图点击目标点 
  */
 function subscribeMapGoal(callback) {
-    rosnodejs.nh.subscribe('/tr_hmi/goal', 'geometry_msgs/PoseStamped', callback);
+    rosnodejs.nh.subscribe('/tr_hmi/goal_click', 'geometry_msgs/PoseStamped', callback);
 }
 
 /**
