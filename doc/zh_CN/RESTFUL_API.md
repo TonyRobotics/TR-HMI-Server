@@ -220,7 +220,9 @@
 - route: `/roslaunch/start`
 - method: `GET`
 - query:
-  - `preset`: launch 文件预设，目前仅支持 `tr_hmi` 一项，即 `/roslaunch/start?preset=tr_hmi`
+  - `preset`: launch 文件预设，用法：`/roslaunch/start?preset=`，目前支持两种可选参数:
+    - `tr_hmi`: 启动基础节点 launch 文件
+    - `tr_hmi_with_cam`: 启动带有 USB 摄像头相关节点的 launch 文件
 - response:
 
 ```json

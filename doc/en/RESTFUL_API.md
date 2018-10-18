@@ -220,7 +220,9 @@
 - route: `/roslaunch/start`
 - method: `GET`
 - query:
-  - `preset`: preset launch file, only `tr_hmi` available for now, `/roslaunch/start?preset=tr_hmi`
+  - `preset`: preset launch file, usage:`/roslaunch/start?preset=`, avaliable value:
+    - `tr_hmi`: start basic nodes
+    - `tr_hmi_with_cam`: start basic nodes and other nodes which used for usb camera.
 - response:
 
 ```json
