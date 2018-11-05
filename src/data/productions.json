@@ -64,5 +64,16 @@
             "navigation": "navigation.launch",
             "control": "controller.launch"
         }
+    },
+    {
+        "name": "venus10",
+        "productName": "VENUS 10",
+        "package": "abel10_navigation",
+        "cameraEnabled": false,
+        "launchFiles": {
+            "mapping": "mapping.launch",
+            "navigation": "navigation.launch",
+            "control": "controller.launch"
+        }
     }
 ]
