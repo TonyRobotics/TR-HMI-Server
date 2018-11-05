@@ -39,6 +39,9 @@
 `pm2 start src/index.js -x -- --product=abel05`
 > 如果运行不成功，请查看底盘代码，src/data/db.json 中 productions.name与 命令参数中的 --product=abel05 名称是否一致，注意大小写
 
+
+> 如果设置默认型号，则 `pm2 start src/index.js -x -- --product=abel05 --reset`
+
 ### 一、指定产品型号
 
 * 参数：`--product=<name>`
