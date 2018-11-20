@@ -30,6 +30,8 @@ function runRosLaunch(packageName, fileName, callback, options, args) {
     if (args) {
         argsArr.push(...args)
     }
+    console.log(`[---info] packageName=${packageName} fileName=${fileName} options=${options} args=${args}`);
+    console.log("启动ros服务，argsArr",argsArr);
     let subprocess = cp.spawn('roslaunch', argsArr);
     subprocess.on('close', (data) => {
         if (callback) {

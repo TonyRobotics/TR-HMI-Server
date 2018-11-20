@@ -12,6 +12,7 @@
 3. 地图服务：`ros-kinetic-map-server`
 4. 摄像头流服务：`ros-kinetic-web-video-server`
 5. USB 摄像头驱动：`ros-kinetic-usb-cam`
+6. rosbridge：`sudo apt-get install ros-kinetic-rosbridge-suite`
 
 ## 代码部署
 

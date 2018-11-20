@@ -8,12 +8,19 @@ const rosCtrl = require('../../roscontrol');
 const path = require('path');
 
 let fn_startROSLaunch = async (ctx, next) => {
+
+
+
     let preset = ctx.request.query.preset;
+    console.log("运行ROS Launch",preset);
     if (!preset) {
         ctx.response.body = {
             message: 'failed: need preset in query!'
         }
     } else {
+
+        console.log("运行ROS Launch 1");
+
         let launchFile;
         //TODO: 在此处更新预设 launch 
         switch (preset) {
@@ -35,10 +42,10 @@ let fn_startROSLaunch = async (ctx, next) => {
                 console.log('roslaunch Closed ===> \n', data);
             }
             if (event == 'stderr') {
-                // console.log('roslaunch STDERR ===>\n', data);
+                console.error('roslaunch STDERR ===>\n', data);
             }
             if (event == 'stdout') {
-                // console.log('roslaunch STDERR ===>\n', data);
+                console.log('roslaunch stdout ===>\n', data);
             }
         });
         ctx.response.body = {
